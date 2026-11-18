@@ -1,0 +1,80 @@
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from figlib import *
+import numpy as np
+from matplotlib.patches import Polygon, Rectangle
+
+# 3.1 Ohm's law triangle
+fig, ax = plt.subplots(figsize=(2.6, 2.3))
+ax.add_patch(Polygon([[0, 0], [2, 0], [1, 1.75]], closed=True, fc=LIGHT, ec=NAVY, lw=2))
+ax.plot([0.42, 1.58], [0.74, 0.74], color=NAVY, lw=1.6)
+ax.plot([1, 1], [0, 0.74], color=NAVY, lw=1.6)
+ax.text(1, 1.05, "V", ha="center", va="center", fontsize=24, color=COPPER)
+ax.text(0.62, 0.35, "I", ha="center", va="center", fontsize=24, color=NAVY)
+ax.text(1.38, 0.35, "R", ha="center", va="center", fontsize=24, color=NAVY)
+ax.text(1.38 - 0.38, 0.35, "×", ha="center", va="center", fontsize=14, color=GREY)
+ax.set_xlim(-0.1, 2.1); ax.set_ylim(-0.1, 1.85); ax.set_aspect("equal"); ax.axis("off")
+save_fig(fig, "ch03_triangle")
+
+# 3.2 V-I graphs
+fig, axs = plt.subplots(1, 3, figsize=(6.3, 2.3))
+v = np.linspace(0, 10, 100)
+axs[0].plot(v, v / 100 * 1000, color=NAVY, lw=2)
+axs[0].set_title("Resistor (100 Ω)", fontsize=10, color=NAVY)
+axs[0].set_xlabel("V (volts)"); axs[0].set_ylabel("I (mA)")
+vl = np.linspace(0, 12, 100)
+axs[1].plot(vl, 0.42 * (vl / 12) ** 0.55 * 1000, color=COPPER, lw=2)
+axs[1].plot(vl, vl / 12 * 420 * 2.2, color=GREY, lw=1, ls="--")
+axs[1].set_ylim(0, 480)
+axs[1].set_title("Filament lamp", fontsize=10, color=COPPER)
+axs[1].set_xlabel("V (volts)")
+vd = np.linspace(0, 0.8, 200)
+axs[2].plot(vd, np.minimum(1e-9 * (np.exp(vd / 0.0258 / 1.4) - 1) * 1000, 60), color=TEAL, lw=2)
+axs[2].set_title("Diode (not ohmic)", fontsize=10, color=TEAL)
+axs[2].set_xlabel("V (volts)")
+axs[2].set_ylim(0, 60)
+for a in axs:
+    a.grid(alpha=0.25)
+fig.tight_layout()
+save_fig(fig, "ch03_vi")
+
+# 3.3 LED with a series resistor
+d = drawing()
+d += (s := elm.SourceV().up().label("9 V", loc="top"))
+d += elm.Line().right(1)
+d += elm.ResistorIEC().right().label("R", loc="top")
+d += elm.Line().right(0.5)
+d += (led := elm.LED().down().label("LED\n2 V", loc="bot"))
+d += (ret := elm.Line().left().tox(s.start))
+d += elm.CurrentLabelInline(direction="in").at(ret).label("I = 20 mA", loc="bot")
+save_drawing(d, "ch03_led")
+
+# 3.4 Voltage drop in a cable run
+d = drawing()
+d += (s := elm.SourceV().up().label("230 V\nsupply", loc="top"))
+d += elm.Line().right(0.6)
+d += elm.ResistorIEC().right().label("0.573 Ω", loc="top").label("cable (out)", loc="bot")
+d += elm.Line().right(0.6)
+d += (h := elm.ResistorIEC().down().label("heater\n3 kW", loc="bot"))
+d += elm.Line().left(0.6)
+d += elm.ResistorIEC().left().label("0.573 Ω", loc="bot").label("cable (return)", loc="top")
+d += elm.Line().left().tox(s.start)
+save_drawing(d, "ch03_cable")
+
+# 3.5 Battery with internal resistance
+d = drawing()
+d += (bat := elm.BatteryCell().up().label("E", loc="top"))
+d += (ri := elm.ResistorIEC().up().label("r", loc="top"))
+d += elm.Line().right(2.5)
+d += elm.Dot(open=True).label("+", loc="top")
+d += elm.Line().right(1.5)
+d += elm.Line().down(0.75)
+d += (rl := elm.ResistorIEC().down().label("R$_L$ (load)", loc="bot"))
+d += elm.Line().down().toy(bat.start)
+d += elm.Line().left(1.5)
+d += elm.Dot(open=True).label("−", loc="bot")
+d += elm.Line().left().tox(bat.start)
+d += elm.EncircleBox([bat, ri], padx=0.5, pady=0.35).linestyle("--").color(COPPER)
+d += elm.Label().at((-0.3, 6.85)).label("the real battery", color=COPPER, fontsize=10)
+d += elm.Label().at((4.75, 3.0)).label("V", fontsize=13)
+save_drawing(d, "ch03_internal")
