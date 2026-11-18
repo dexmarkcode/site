@@ -1,0 +1,48 @@
+@font-face { font-family: "EB Garamond"; src: url(../fonts/EBGaramond-Regular.ttf); font-weight: normal; font-style: normal; }
+@font-face { font-family: "EB Garamond"; src: url(../fonts/EBGaramond-SemiBold.ttf); font-weight: 600; font-style: normal; }
+@font-face { font-family: "EB Garamond"; src: url(../fonts/EBGaramond-Bold.ttf); font-weight: bold; font-style: normal; }
+@font-face { font-family: "EB Garamond"; src: url(../fonts/EBGaramond-Italic.ttf); font-weight: normal; font-style: italic; }
+@font-face { font-family: "EB Garamond"; src: url(../fonts/EBGaramond-BoldItalic.ttf); font-weight: bold; font-style: italic; }
+@font-face { font-family: "Source Sans 3"; src: url(../fonts/SourceSans3-Regular.ttf); font-weight: normal; }
+@font-face { font-family: "Source Sans 3"; src: url(../fonts/SourceSans3-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: "Source Sans 3"; src: url(../fonts/SourceSans3-Bold.ttf); font-weight: bold; }
+
+body { font-family: "EB Garamond", Georgia, serif; line-height: 1.5; color: #1c1c1c; margin: 0 4%; }
+p { margin: 0; text-indent: 1.3em; text-align: justify; }
+h1 + p, h2 + p, h3 + p, h4 + p, div + p, figure + p, table + p, ul + p, ol + p, .chapter-intro p, li p, div > p:first-child { text-indent: 0; }
+h1, h2, h3, h4 { font-family: "Source Sans 3", Helvetica, sans-serif; color: #12263a; line-height: 1.2; }
+h1 { font-size: 1.7em; font-weight: 600; margin: 2.5em 0 1em 0; text-align: center; page-break-before: always; }
+h1.part { color: #0b7a8a; font-size: 1.9em; margin-top: 30%; border-bottom: 2px solid #c9861a; padding-bottom: 0.4em; }
+h2 { font-size: 1.45em; font-weight: 600; margin: 1.6em 0 1em 0; page-break-before: always; }
+h3 { font-size: 1.15em; margin: 1.5em 0 0.5em 0; }
+h4 { font-size: 1em; color: #0b7a8a; margin: 1.2em 0 0.4em 0; }
+h5 { font-family: "EB Garamond", serif; font-style: italic; font-size: 1em; margin: 1em 0 0.3em 0; }
+.secnum { color: #0b7a8a; margin-right: 0.3em; }
+.part-intro { font-style: italic; margin: 1.5em 0; color: #39464d; }
+.part-intro p { text-indent: 0; margin-bottom: 0.7em; text-align: left; }
+.chapter-intro { font-style: italic; color: #39464d; margin: 0 0 1.4em 0; border-bottom: 1px solid #9fb3bd; padding-bottom: 1em; }
+figure { margin: 1.3em 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; }
+figcaption { font-family: "Source Sans 3", sans-serif; font-size: 0.8em; text-align: left; color: #3d4a51; margin-top: 0.4em; }
+figcaption strong { color: #0b7a8a; }
+.eq { text-align: center; margin: 0.9em 0; }
+.eq img { vertical-align: middle; max-width: 88%; }
+.eqn { float: right; font-size: 0.9em; color: #4b5a62; margin-top: 0.3em; }
+.example, .problem, .note, .keypoints, .exercises, .casefile { margin: 1.2em 0; padding: 0.7em 0.9em; font-size: 0.95em; }
+.example p, .problem p, .note p, .casefile p, .keypoints p, .exercises p { text-indent: 0; margin-bottom: 0.4em; }
+.example { background: #eef5f6; border-left: 4px solid #0b7a8a; }
+.problem { background: #fbf5ea; border-left: 4px solid #c9861a; }
+.casefile { border: 1px solid #9fb3bd; border-top: 4px solid #12263a; }
+.note { border-top: 1px solid #0b7a8a; border-bottom: 1px solid #0b7a8a; }
+.keypoints { background: #12263a; color: #eef4f7; }
+.keypoints h4, .keypoints h3 { color: #f1c27d; }
+.exercises { border-top: 3px solid #0b7a8a; }
+table { border-collapse: collapse; width: 100%; font-family: "Source Sans 3", sans-serif; font-size: 0.8em; margin: 1em 0; }
+caption { text-align: left; font-size: 0.95em; padding-bottom: 0.4em; }
+th { border-top: 2px solid #12263a; border-bottom: 1px solid #12263a; text-align: left; padding: 0.3em; }
+td { border-bottom: 1px solid #d2dbe0; padding: 0.3em; vertical-align: top; }
+li { margin-bottom: 0.3em; }
+dt { font-family: "Source Sans 3", sans-serif; font-weight: 600; color: #12263a; margin-top: 0.6em; }
+dd { margin-left: 0; }
+.copyright p { font-size: 0.8em; text-indent: 0; margin-bottom: 0.6em; text-align: left; }
+.dedication p { text-align: center; font-style: italic; margin-top: 30%; }
