@@ -1,0 +1,34 @@
+body { font-family: serif; line-height: 1.5; margin: 0 4%; text-align: justify; }
+h1 { font-weight: normal; color: #1d3557; text-align: center; margin: 2em 0 1em; font-size: 1.8em; }
+h1.part { page-break-before: always; }
+h2 { color: #1d3557; font-weight: normal; font-size: 1.6em; margin: 1.6em 0 0.8em; border-bottom: 2px solid #c0602a; padding-bottom: 0.3em; text-align: left; }
+h3 { font-family: sans-serif; color: #1d3557; font-size: 1.15em; margin: 1.5em 0 0.5em; text-align: left; }
+h4 { font-family: sans-serif; color: #c0602a; font-size: 1em; margin: 1.2em 0 0.4em; }
+p { margin: 0 0 0.6em; }
+figure { margin: 1.2em 0; text-align: center; page-break-inside: avoid; }
+figure img, img { max-width: 100%; height: auto; }
+figcaption { font-family: sans-serif; font-size: 0.82em; color: #555; text-align: left; margin-top: 0.4em; }
+div.eq { text-align: center; margin: 0.9em 0; font-size: 1.08em; }
+div.eq p { text-align: center; }
+span.frac { display: inline-block; vertical-align: middle; text-align: center; margin: 0 0.15em; line-height: 1.2; }
+span.frac span { display: block; padding: 0 0.2em; }
+span.frac span.num { border-bottom: 1px solid currentColor; }
+div.keyeq, div.example, div.tip, div.pitfall, div.outcomes, div.workshop { margin: 1.2em 0; padding: 0.7em 0.9em; }
+div.keyeq > p:first-child, div.example > p:first-child, div.tip > p:first-child, div.pitfall > p:first-child, div.outcomes > p:first-child, div.workshop > p:first-child { font-family: sans-serif; font-size: 0.8em; letter-spacing: 0.1em; text-transform: uppercase; font-weight: bold; }
+div.keyeq { border: 1px solid #1d3557; background: #eef2f7; text-align: center; }
+div.keyeq p { text-align: center; }
+div.example { border-left: 4px solid #c0602a; background: #fbf5f0; }
+div.example > p:first-child { color: #c0602a; }
+div.tip { border-left: 4px solid #2a7f62; background: #eff7f3; }
+div.tip > p:first-child { color: #2a7f62; }
+div.workshop { border: 1px dashed #2a7f62; }
+div.pitfall { border-left: 4px solid #9e2a3a; background: #fbf0f1; }
+div.pitfall > p:first-child { color: #9e2a3a; }
+div.outcomes { border-top: 2px solid #1d3557; border-bottom: 2px solid #1d3557; }
+table { border-collapse: collapse; width: 100%; font-family: sans-serif; font-size: 0.85em; margin: 1em 0; }
+th { border-top: 2px solid #1d3557; border-bottom: 1px solid #1d3557; padding: 0.3em; text-align: left; }
+td { border-bottom: 1px solid #ccd; padding: 0.3em; vertical-align: top; }
+caption { font-weight: bold; text-align: left; margin-bottom: 0.4em; color: #1d3557; }
+dt { font-weight: bold; color: #1d3557; margin-top: 0.6em; }
+dd { margin-left: 1em; }
+sub, sup { font-size: 0.7em; }
