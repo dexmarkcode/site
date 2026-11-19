@@ -11,12 +11,14 @@ def avg_power(r, tag):
     tv, ti = pick(r, [0, 10, 30, 60]), pick(r, [-50, -30, -10, 0, 20, 40])
     th = tv - ti
     P = 0.5 * Vm * Im * math.cos(RAD(th))
+    if abs(P) < 1e-9 * Vm * Im:
+        P = 0.0
     return Problem(
         f"The voltage and current at the terminals of a load are <i>v</i> = {Vm} cos(ω<i>t</i> + {tv}°) V and <i>i</i> = {Im} cos(ω<i>t</i> {'+' if ti >= 0 else '−'} {abs(ti)}°) A. Find the average power absorbed and the power factor.",
-        [step("Phase difference", f"θ = θ<sub>v</sub> − θ<sub>i</sub> = {tv} − ({ti}) = {th}°."),
+        [step("Phase difference", f"θ = θ<sub>v</sub> − θ<sub>i</sub> = {tv} − ({num(ti)}) = {th}°."),
          step("Average power (peak values)", f"<i>P</i> = ½<i>V</i><sub>m</sub><i>I</i><sub>m</sub> cos θ = 0.5 × {Vm} × {Im} × cos {th}° = {num(P)} W."),
          step("Same thing with RMS values", f"<i>V</i><sub>rms</sub><i>I</i><sub>rms</sub> cos θ = {num(Vm / math.sqrt(2))} × {num(Im / math.sqrt(2))} × {num(math.cos(RAD(th)))} = {num(P)} W."),
-         step("Power factor", f"pf = cos θ = {num(math.cos(RAD(th)))}, {'lagging (inductive)' if th > 0 else ('leading (capacitive)' if th < 0 else 'unity')}.")],
+         step("Power factor", f"pf = cos θ = {num(math.cos(RAD(th)))}, {'lagging (inductive)' if th > 0 else ('leading (capacitive)' if th < 0 else 'unity')}." + (" With θ = 90° the load is purely reactive: energy flows in and out every cycle but none is consumed." if abs(th) == 90 else ""))],
         f"<i>P</i> = {eng(P, 'W')}, pf = {num(math.cos(RAD(th)), 3)}", level=1, topic="average power")
 
 

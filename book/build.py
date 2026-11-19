@@ -70,7 +70,7 @@ class Ctx:
 
 
 def md(text):
-    return markdown.markdown(text, extensions=["tables", "md_in_html", "attr_list", "sane_lists"])
+    return markdown.markdown(text, extensions=["tables", "md_in_html", "attr_list", "sane_lists", "smarty"])
 
 
 def figure_html(name, caption, label, epub, cls="tfig"):

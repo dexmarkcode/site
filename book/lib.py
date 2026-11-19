@@ -32,7 +32,7 @@ PREFIX = {-15: "f", -12: "p", -9: "n", -6: "μ", -3: "m", 0: "", 3: "k", 6: "M",
 
 def _sig(x, sig):
     """Round to sig significant figures and return a tidy string."""
-    if x == 0:
+    if abs(x) < 1e-13:
         return "0"
     r = round(x, sig - 1 - int(math.floor(math.log10(abs(x)))))
     s = f"{r:.{max(sig - 1 - int(math.floor(math.log10(abs(r)))), 0)}f}" if r != 0 else "0"
@@ -85,6 +85,9 @@ def polar(z, unit="", sig=4):
 
 def rect(z, unit="", sig=4):
     re, im = z.real, z.imag
+    tol = 1e-9 * max(abs(z), 1e-30)
+    re = 0.0 if abs(re) < tol else re
+    im = 0.0 if abs(im) < tol else im
     sgn = "+" if im >= 0 else MINUS
     body = f"{_sig(re, sig)} {sgn} j{_sig(abs(im), sig)}"
     if unit:

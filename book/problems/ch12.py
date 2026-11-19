@@ -104,8 +104,10 @@ def two_watt(r, tag):
     phi = math.acos(pf)
     W1 = VL * IL * math.cos(RAD(30) - phi)
     W2 = VL * IL * math.cos(RAD(30) + phi)
+    W2 = 0.0 if abs(W2) < 1e-6 * W1 else W2
+    pftxt = "at unity power factor" if pf == 1.0 else f"at a lagging power factor of {pf}"
     return Problem(
-        f"A balanced load takes {IL} A per line from a {VL} V supply at a lagging power factor of {pf}. What will each wattmeter read if the two-wattmeter method is used?",
+        f"A balanced load takes {IL} A per line from a {VL} V supply {pftxt}. What will each wattmeter read if the two-wattmeter method is used?",
         [step("Meter equations", "<i>W</i><sub>1</sub> = <i>V</i><sub>L</sub><i>I</i><sub>L</sub> cos(30° − φ), <i>W</i><sub>2</sub> = <i>V</i><sub>L</sub><i>I</i><sub>L</sub> cos(30° + φ)."),
          step("Angle", f"φ = cos<sup>−1</sup> {pf} = {num(D(phi))}°."),
          step("Readings", f"<i>W</i><sub>1</sub> = {VL} × {IL} × cos({num(30 - D(phi))}°) = {eng(W1, 'W')}; <i>W</i><sub>2</sub> = {VL} × {IL} × cos({num(30 + D(phi))}°) = {eng(W2, 'W')}."),

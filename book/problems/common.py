@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -20,6 +21,10 @@ def build(chapter, plan, seed):
                     break
             seen.add(key)
             out.append(p)
+    # typographic minus signs throughout
+    fix = lambda t: re.sub(r"(?<![\w>])-(\d)", "\u2212\\1", t)
+    for p in out:
+        p.text, p.answer, p.steps = fix(p.text), fix(p.answer), [fix(s) for s in p.steps]
     # stable order by level, keeping template grouping within a level
     out.sort(key=lambda p: p.level)
     for k, p in enumerate(out, 1):
