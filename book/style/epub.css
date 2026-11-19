@@ -1,0 +1,56 @@
+@font-face { font-family: "EBG"; src: url("../fonts/EBGaramond-400.ttf"); font-weight: normal; font-style: normal; }
+@font-face { font-family: "EBG"; src: url("../fonts/EBGaramond-400i.ttf"); font-weight: normal; font-style: italic; }
+@font-face { font-family: "EBG"; src: url("../fonts/EBGaramond-600.ttf"); font-weight: bold; font-style: normal; }
+@font-face { font-family: "EBG"; src: url("../fonts/EBGaramond-600i.ttf"); font-weight: bold; font-style: italic; }
+@font-face { font-family: "Corm"; src: url("../fonts/CormorantGaramond-600.ttf"); }
+
+body { font-family: "EBG", Georgia, serif; line-height: 1.45; margin: 0 4%; color: #1d1d1f; }
+p { margin: 0 0 0.6em; text-align: justify; }
+.prose > p + p, .front > p + p { text-indent: 1.3em; margin-top: -0.6em; }
+h1, h2, h3 { page-break-after: avoid; }
+.chap-num, .part-num { font-family: "Corm", Georgia, serif; text-transform: uppercase; letter-spacing: 0.3em; color: #B5651D; margin: 2em 0 0; font-size: 1em; }
+.chap-title, .part-title, .front-title { font-family: "Corm", Georgia, serif; color: #1F3A5F; font-size: 2em; line-height: 1.1; margin: 0.3em 0 0.6em; font-weight: normal; }
+.chap-rule, .part-rule { border-top: 2px solid #B5651D; width: 30%; margin-bottom: 1.5em; }
+.part { text-align: left; }
+.part-intro { font-style: italic; }
+.part-list { list-style: none; padding: 0; }
+.part-list span { color: #B5651D; margin-right: 0.6em; }
+.prose h2, .front h2, .back h2 { font-family: "Corm", Georgia, serif; color: #1F3A5F; font-size: 1.35em; margin: 1.4em 0 0.4em; font-weight: bold; }
+.prose h3, .front h3, .back h3 { font-style: italic; color: #B5651D; font-size: 1.05em; margin: 1em 0 0.3em; }
+.eq { text-align: center; margin: 0.7em 0; text-indent: 0 !important; }
+.eqn { color: #777; margin-left: 1.5em; font-size: 0.9em; }
+figure { margin: 1em 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; }
+figure.pfig img { max-width: 80%; }
+figcaption { font-size: 0.85em; font-style: italic; color: #444; }
+.flabel { font-style: normal; font-weight: bold; color: #1F3A5F; }
+.box { margin: 1em 0; padding: 0.6em 0.8em; background: #f3efe7; border-left: 3px solid #B5651D; }
+.box p { text-indent: 0 !important; margin-top: 0 !important; }
+.box.example { background: #eef2f7; border-left-color: #1F3A5F; }
+.boxhead { font-weight: bold; font-size: 0.8em; letter-spacing: 0.1em; text-transform: uppercase; color: #B5651D; }
+.boxhead span { text-transform: none; font-style: italic; letter-spacing: 0; color: #1F3A5F; }
+table { border-collapse: collapse; margin: 0.8em auto; font-size: 0.9em; }
+th { border-bottom: 1px solid #1F3A5F; padding: 0.2em 0.6em; text-align: left; }
+td { border-bottom: 1px solid #ddd; padding: 0.2em 0.6em; }
+table.matrix { display: inline-table; border-left: 1px solid #333; border-right: 1px solid #333; vertical-align: middle; margin: 0.3em; }
+table.matrix td { border: none; text-align: right; }
+.sec { font-family: "Corm", Georgia, serif; color: #1F3A5F; font-size: 1.6em; border-bottom: 1px solid #1F3A5F; margin-top: 2em; font-weight: normal; }
+h3.lvl { color: #B5651D; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.9em; margin-top: 1.5em; }
+h3.lvl span { text-transform: none; font-style: italic; color: #1F3A5F; letter-spacing: 0; }
+.lvlnote, .intro { font-style: italic; color: #666; font-size: 0.9em; }
+.prob { margin-bottom: 1em; padding-bottom: 0.6em; border-bottom: 1px solid #e3e3e3; }
+.pnum { font-weight: bold; color: #1F3A5F; margin-right: 0.5em; }
+.dots { color: #B5651D; font-size: 0.7em; margin-right: 0.5em; }
+.sol { margin-bottom: 1.1em; }
+.solhead { border-bottom: 1px solid #ddd; margin-bottom: 0.2em; }
+.topic { font-style: italic; color: #777; font-size: 0.9em; }
+.sol li { margin: 0.2em 0; text-align: left; }
+.ans { background: #f3efe7; padding: 0.3em 0.6em; border-left: 3px solid #B5651D; text-align: left; }
+.ans span { font-weight: bold; font-size: 0.8em; letter-spacing: 0.1em; text-transform: uppercase; color: #B5651D; margin-right: 0.5em; }
+.titlepage { text-align: center; margin-top: 20%; }
+.tp-title { font-family: "Corm", Georgia, serif; font-size: 2.4em; color: #1F3A5F; text-align: center; }
+.tp-sub { font-style: italic; text-align: center; }
+.tp-author { margin-top: 3em; letter-spacing: 0.15em; text-transform: uppercase; text-align: center; }
+.copyright { font-size: 0.85em; }
+.copyright p { text-align: left; }
+.dedication p { text-align: center; font-style: italic; margin-top: 30%; }

@@ -1,0 +1,18 @@
+@font-face { font-family: "EBG"; src: url("file://FONTDIR/EBGaramond-400.ttf"); }
+@font-face { font-family: "EBG"; src: url("file://FONTDIR/EBGaramond-400i.ttf"); font-style: italic; }
+@font-face { font-family: "EBG"; src: url("file://FONTDIR/EBGaramond-600.ttf"); font-weight: 600; }
+@font-face { font-family: "Corm"; src: url("file://FONTDIR/CormorantGaramond-600.ttf"); font-weight: 600; }
+@font-face { font-family: "Corm"; src: url("file://FONTDIR/CormorantGaramond-700.ttf"); font-weight: 700; }
+@page { size: 7in 10in; margin: 0; }
+body { margin: 0; }
+.c { position: relative; width: 7in; height: 10in; background: linear-gradient(170deg, #142B47 0%, #0F2238 55%, #0B1A2C 100%); color: #F4EBDD; overflow: hidden; }
+.art { position: absolute; left: 0; top: 0; width: 7in; height: 10in; }
+.top { position: absolute; top: 0.85in; left: 0.7in; right: 0.7in; }
+.kicker { font-family: "EBG"; font-weight: 600; font-size: 10pt; letter-spacing: 0.24em; color: #D49A5E; margin: 0 0 0.25in; }
+.t1 { font-family: "Corm"; font-weight: 600; font-size: 54pt; line-height: 0.95; margin: 0; color: #FFF8EE; }
+.t2 { font-family: "Corm"; font-weight: 600; font-size: 54pt; line-height: 1.0; margin: 0; color: #D49A5E; }
+.rule { width: 1.6in; height: 3px; background: #D49A5E; margin: 0.3in 0 0.25in; }
+.sub { font-family: "EBG"; font-style: italic; font-size: 15.5pt; line-height: 1.35; margin: 0; color: #EADFCF; }
+.bottom { position: absolute; bottom: 0.7in; left: 0.7in; right: 0.7in; }
+.feat { font-family: "EBG"; font-size: 9.5pt; letter-spacing: 0.08em; color: #C9BBA6; margin: 0 0 0.25in; border-top: 1px solid #5a4a3a; padding-top: 0.15in; }
+.auth { font-family: "EBG"; font-weight: 600; font-size: 17pt; letter-spacing: 0.22em; margin: 0; color: #FFF8EE; }
