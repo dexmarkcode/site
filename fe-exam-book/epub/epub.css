@@ -1,0 +1,42 @@
+@font-face { font-family: "Pagella"; font-style: normal; font-weight: normal; src: url("../fonts/texgyrepagella-regular.otf"); }
+@font-face { font-family: "Pagella"; font-style: italic; font-weight: normal; src: url("../fonts/texgyrepagella-italic.otf"); }
+@font-face { font-family: "Pagella"; font-style: normal; font-weight: bold; src: url("../fonts/texgyrepagella-bold.otf"); }
+@font-face { font-family: "Pagella"; font-style: italic; font-weight: bold; src: url("../fonts/texgyrepagella-bolditalic.otf"); }
+
+body { font-family: "Pagella", "Palatino Linotype", Palatino, Georgia, serif; line-height: 1.5; margin: 0 4%; color: #1d1d1d; text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+p { margin: 0 0 0.55em 0; text-indent: 0; }
+h1, h2, h3, h4 { font-family: "Pagella", Georgia, serif; color: #14284B; text-align: left; hyphens: none; -webkit-hyphens: none; page-break-after: avoid; }
+h1 { font-size: 1.85em; text-align: center; margin: 2.2em 0 1.3em 0; line-height: 1.25; page-break-before: always; }
+h1::after { content: ""; display: block; width: 22%; margin: 0.5em auto 0 auto; border-bottom: 1.5px solid #B5651D; }
+h1 .chapnum, h1 .partlabel { display: block; font-size: 0.5em; letter-spacing: 0.25em; text-transform: uppercase; color: #B5651D; font-weight: normal; margin-bottom: 0.4em; }
+h1.part { margin-top: 30%; font-size: 2.1em; }
+.partblurb { text-align: center; font-style: italic; color: #555; margin: 1.5em 8%; }
+h2 { font-size: 1.32em; margin: 1.6em 0 0.5em 0; }
+h2 .secnum { color: #B5651D; margin-right: 0.3em; }
+h3 { font-size: 1.1em; font-style: italic; margin: 1.2em 0 0.4em 0; }
+h3.qgroup { font-style: normal; color: #B5651D; border-bottom: 1px solid #e3d6c8; padding-bottom: 0.15em; }
+h4 { font-size: 1em; color: #B5651D; }
+.dropcap { float: left; font-size: 3.3em; line-height: 0.85; margin: 0.06em 0.08em 0 0; color: #B5651D; font-weight: bold; }
+.box { background: #F5F2EC; border-left: 4px solid #14284B; padding: 0.6em 1em 0.4em 1em; margin: 1.2em 0; page-break-inside: avoid; }
+.box.tip, .box.checklist { border-left-color: #2E6B4F; }
+.box.trap { border-left-color: #9E2B25; }
+.box.handbook, .box.objectives, .box.story { border-left-color: #B5651D; }
+.boxtitle { font-weight: bold; font-variant: small-caps; letter-spacing: 0.05em; color: #14284B; }
+.box.tip .boxtitle, .box.checklist .boxtitle { color: #2E6B4F; }
+.box.trap .boxtitle { color: #9E2B25; }
+.box.handbook .boxtitle, .box.objectives .boxtitle, .box.story .boxtitle { color: #B5651D; }
+.question { margin: 1.1em 0; page-break-inside: avoid; }
+.question ol { margin: 0.3em 0 0 0; }
+.solution { font-size: 0.94em; margin: 0.9em 0; padding-bottom: 0.7em; border-bottom: 1px solid #ecdccb; }
+.qtopic { font-variant: small-caps; color: #6b6b6b; font-size: 0.9em; letter-spacing: 0.04em; }
+figure { margin: 1.3em 0; text-align: center; page-break-inside: avoid; }
+figure img, img { max-width: 100%; height: auto; }
+figcaption { font-size: 0.88em; font-style: italic; color: #444; margin-top: 0.4em; }
+table { border-collapse: collapse; margin: 1em auto; font-size: 0.88em; }
+th { border-bottom: 1.5px solid #14284B; color: #14284B; padding: 0.3em 0.5em; }
+td { border-bottom: 1px solid #e5e0d8; padding: 0.25em 0.5em; }
+pre, code { font-family: "DejaVu Sans Mono", Menlo, Consolas, monospace; font-size: 0.85em; }
+pre { background: #F5F2EC; padding: 0.6em 0.9em; white-space: pre-wrap; text-align: left; }
+blockquote { font-style: italic; color: #444; margin: 1em 6%; }
+math { font-size: 1.05em; }
+nav#toc ol { list-style: none; }

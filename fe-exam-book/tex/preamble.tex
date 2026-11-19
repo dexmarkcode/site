@@ -1,0 +1,115 @@
+% ---------- palette
+\usepackage{xcolor}
+\definecolor{inkblue}{HTML}{14284B}
+\definecolor{copper}{HTML}{B5651D}
+\definecolor{softgrey}{HTML}{F5F2EC}
+\definecolor{tipgreen}{HTML}{2E6B4F}
+\definecolor{trapred}{HTML}{9E2B25}
+\definecolor{midgrey}{HTML}{6B6B6B}
+
+% ---------- fonts
+\setmonofont[Scale=0.84]{DejaVu Sans Mono}
+\newfontfamily\labelfont[Letters=SmallCaps]{TeX Gyre Pagella}
+
+% ---------- layout helpers
+\usepackage{needspace}
+\usepackage{float}
+\floatplacement{figure}{H}
+\usepackage{eso-pic}
+\usepackage{lettrine}
+\renewcommand{\LettrineFontHook}{\color{copper}}
+\setcounter{DefaultLines}{3}
+\setlength{\DefaultFindent}{2pt}
+\setlength{\DefaultNindent}{0.3em}
+\setlength{\emergencystretch}{3em}
+\widowpenalty=10000
+\clubpenalty=10000
+\raggedbottom
+
+% ---------- captions
+\usepackage{caption}
+\captionsetup{font={small,it}, labelfont={bf,up,color=inkblue}, labelsep=period, justification=centering, skip=6pt}
+\captionsetup[figure]{name=Figure}
+
+% ---------- headings
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\color{inkblue}\centering}
+  {\addfontfeature{LetterSpace=25}\large\scshape\color{copper}Chapter \thechapter}
+  {14pt}
+  {\fontsize{25}{30}\selectfont\bfseries}
+  [\vspace{10pt}{\color{copper}\rule{0.22\textwidth}{0.9pt}}]
+\titleformat{name=\chapter,numberless}[display]
+  {\normalfont\color{inkblue}\centering}
+  {}
+  {0pt}
+  {\fontsize{25}{30}\selectfont\bfseries}
+  [\vspace{10pt}{\color{copper}\rule{0.22\textwidth}{0.9pt}}]
+\titlespacing*{\chapter}{0pt}{30pt}{34pt}
+\titleformat{\section}{\normalfont\Large\bfseries\color{inkblue}}{\color{copper}\thesection}{0.7em}{}
+\titlespacing*{\section}{0pt}{20pt}{8pt}
+\titleformat{\subsection}{\normalfont\large\bfseries\itshape\color{inkblue}}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{14pt}{5pt}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries\color{copper}}{}{0pt}{}
+\setcounter{secnumdepth}{1}
+
+% ---------- part pages
+\newcommand{\bookpart}[3]{%
+  \cleardoublepage\thispagestyle{empty}%
+  \refstepcounter{part}%
+  \addcontentsline{toc}{part}{Part #1\quad #2}%
+  \vspace*{0.2\textheight}%
+  \begin{center}
+  {\addfontfeature{LetterSpace=30}\large\scshape\color{copper}Part #1\par}
+  \vspace{16pt}
+  {\fontsize{28}{34}\selectfont\bfseries\color{inkblue}#2\par}
+  \vspace{14pt}{\color{copper}\rule{0.3\textwidth}{0.9pt}}\par\vspace{26pt}
+  \begin{minipage}{0.8\textwidth}\centering\itshape\color{midgrey}#3\end{minipage}
+  \end{center}
+  \clearpage\thispagestyle{empty}\mbox{}\cleardoublepage}
+
+% ---------- running heads
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
+\renewcommand{\sectionmark}[1]{}
+\fancyhead[LE]{\small\addfontfeature{LetterSpace=10}\scshape\color{midgrey}Electrical Engineering FE Exam Prep}
+\fancyhead[RO]{\small\addfontfeature{LetterSpace=10}\scshape\color{midgrey}\nouppercase{\leftmark}}
+\fancyfoot[C]{\small\color{inkblue}\thepage}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\color{inkblue}\thepage}}
+
+% ---------- boxes
+\usepackage[most]{tcolorbox}
+\newtcolorbox{bookbox}[2]{enhanced, breakable, colback=softgrey, colframe=#2, boxrule=0pt,
+  leftrule=2.6pt, arc=0pt, outer arc=0pt, left=11pt, right=11pt, top=7pt, bottom=8pt,
+  before skip=13pt, after skip=13pt, fonttitle=\bfseries\scshape\addfontfeature{LetterSpace=6},
+  coltitle=#2, colbacktitle=softgrey, titlerule=0pt, toptitle=6pt, bottomtitle=-2pt, title={#1}}
+
+% ---------- questions and solutions
+\newenvironment{questionblock}{\par\vspace{5pt}\begin{minipage}{\linewidth}}{\end{minipage}\par\vspace{7pt}}
+\newenvironment{solutionblock}{\par\vspace{4pt}\small}{\par\vspace{4pt}{\centering\color{copper!50}\rule{0.12\textwidth}{0.4pt}\par}\vspace{4pt}}
+\newcommand{\qtopic}[1]{{\footnotesize\addfontfeature{LetterSpace=6}\scshape\color{midgrey}#1}}
+
+% ---------- lists
+\usepackage{enumitem}
+\setlist{itemsep=1.5pt, topsep=4pt}
+\setlist[enumerate,1]{leftmargin=2.4em}
+
+% ---------- tables
+\renewcommand{\arraystretch}{1.18}
+
+% ---------- TOC styling
+\usepackage{tocloft}
+\renewcommand{\cftpartfont}{\bfseries\scshape\color{copper}}
+\renewcommand{\cftpartpagefont}{\bfseries\color{copper}}
+\renewcommand{\cftchapfont}{\bfseries\color{inkblue}}
+\renewcommand{\cftchappagefont}{\bfseries\color{inkblue}}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftbeforechapskip}{5pt}
+\setlength{\cftbeforepartskip}{14pt}
+\renewcommand{\cftsecfont}{\small}
+\renewcommand{\cftsecpagefont}{\small}
+\renewcommand{\cfttoctitlefont}{\hfill\fontsize{25}{30}\selectfont\bfseries\color{inkblue}}
+\renewcommand{\cftaftertoctitle}{\hfill\hfill}
