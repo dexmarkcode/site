@@ -73,3 +73,11 @@
 4. *i*~d~ ≈ −107 A; torque ≈ 135 N·m (compared with 96 N·m with *i*~d~ = 0).
 5. *ω*~e~ = 3 770 rad/s; *v*~d~ ≈ −254 V, *v*~q~ ≈ 132 V; magnitude ≈ 287 V, which exceeds the 231 V available. More negative *i*~d~ (or less torque) is needed.
 7. 10 rad/s, about 1.6 Hz.
+
+## Chapter 10
+2. *I*~avg~ ≈ 53.9 A, *I*~rms~^2^ ≈ 9 254 A^2^; conduction loss ≈ 59.8 W.
+3. About 23.1 W for the MOSFET. The losses would be equal only at roughly 1 000 A RMS, far beyond the operating range: the MOSFET wins everywhere in practice.
+4. About 43.5 W.
+5. 109 °C; maximum loss about 429 W.
+6. About 9.6 times more cycles.
+7. About 192 V of overshoot; peak about 1 040 V. A 1 200 V device has only about 13 % margin, which is tight once cosmic-ray derating is considered: reduce loop inductance or slow the turn-off.
