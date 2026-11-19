@@ -171,7 +171,92 @@ def ch3():
     fig.tight_layout(); save(fig, 'ch03_dtconv')
 
 
-ALL = [ch1, ch2, ch3]
+# =============================================================== Chapter 4
+def ch4():
+    t = np.linspace(-1, 1, 3000)
+    sq = np.sign(np.sin(2 * np.pi * t))
+    fig, axs = plt.subplots(2, 2, figsize=(6.2, 3.4), sharex=True, sharey=True)
+    for ax, K in zip(axs.flat, [1, 3, 9, 41]):
+        ps = sum(4 / (np.pi * k) * np.sin(2 * np.pi * k * t) for k in range(1, K + 1, 2))
+        ax.plot(t, sq, color=fs.GREY, lw=0.9)
+        ax.plot(t, ps, color=fs.NAVY, lw=1.2)
+        ax.set_title(f'harmonics up to $k = {K}$', loc='left'); ax.set_ylim(-1.45, 1.45)
+    axs[1, 0].set_xlabel('$t/T$', loc='right'); axs[1, 1].set_xlabel('$t/T$', loc='right')
+    fig.tight_layout(); save(fig, 'ch04_gibbs')
+
+    fig, ax = plt.subplots(figsize=(5.8, 2.2))
+    kk = np.arange(-12, 13)
+    d = 0.25
+    ak = d * np.sinc(kk * d)
+    fs.stem(ax, kk, ak, fs.RUST)
+    xx = np.linspace(-12.5, 12.5, 800)
+    ax.plot(xx, d * np.sinc(xx * d), color=fs.GREY, lw=0.9, ls='--')
+    ax.set_xlabel('$k$', loc='right'); ax.set_title('$a_k$ for a pulse train with duty cycle 1/4, and its sinc envelope', loc='left')
+    fig.tight_layout(); save(fig, 'ch04_linespec')
+
+
+# =============================================================== Chapter 5
+def ch5():
+    fig, axs = plt.subplots(2, 2, figsize=(6.2, 3.4))
+    t = np.linspace(-3, 3, 1000)
+    w = np.linspace(-20, 20, 1500)
+    for row, T, c in [(0, 2.0, fs.NAVY), (1, 0.5, fs.RUST)]:
+        axs[row, 0].plot(t, np.where(abs(t) < T / 2, 1, 0), color=c)
+        axs[row, 0].set_title(f'pulse of width $T = {T:g}$', loc='left'); axs[row, 0].set_ylim(-0.2, 1.3)
+        axs[row, 1].plot(w, T * np.sinc(w * T / (2 * np.pi)), color=c)
+        axs[row, 1].set_title('$X(j\\omega) = T\\,\\mathrm{sinc}(\\omega T/2\\pi)$', loc='left'); axs[row, 1].set_ylim(-0.6, 2.2)
+    axs[1, 0].set_xlabel('$t$', loc='right'); axs[1, 1].set_xlabel('$\\omega$', loc='right')
+    fig.tight_layout(); save(fig, 'ch05_pulse')
+
+    fig, axs = plt.subplots(1, 2, figsize=(6.2, 2.1))
+    w = np.linspace(-10, 10, 800); a = 2
+    H = 1 / (a + 1j * w)
+    axs[0].plot(w, abs(H), color=fs.TEAL); axs[0].set_title('$|X(j\\omega)|$', loc='left'); axs[0].axvline(a, color=fs.GOLD, ls='--', lw=0.9)
+    axs[1].plot(w, np.angle(H) * 180 / np.pi, color=fs.RUST); axs[1].set_title('$\\angle X(j\\omega)$ (degrees)', loc='left'); axs[1].axvline(a, color=fs.GOLD, ls='--', lw=0.9)
+    for ax in axs: ax.set_xlabel('$\\omega$', loc='right')
+    fig.tight_layout(); save(fig, 'ch05_magphase')
+
+
+# =============================================================== Chapter 6
+def ch6():
+    fig, axs = plt.subplots(2, 1, figsize=(6.0, 3.2), sharex=True)
+    w = np.linspace(-3.2, 3.2, 2000)
+    def tri(x, W): return np.clip(1 - abs(x) / W, 0, None)
+    for ax, ws, ttl in [(axs[0], 2.5, '$\\omega_s > 2\\omega_M$: copies separate, recovery possible'),
+                        (axs[1], 1.4, '$\\omega_s < 2\\omega_M$: copies overlap, aliasing')]:
+        tot = np.zeros_like(w)
+        for m in range(-3, 4):
+            c = tri(w - m * ws, 1.0)
+            tot += c
+            ax.fill_between(w, 0, c, color=fs.TEAL if m == 0 else fs.GREY, alpha=0.35 if m else 0.55, lw=0)
+        ax.plot(w, tot, color=fs.NAVY, lw=1.1)
+        ax.set_title(ttl, loc='left'); ax.set_ylim(0, 1.6); ax.set_yticks([])
+    axs[1].set_xlabel('$\\omega$', loc='right')
+    fig.tight_layout(); save(fig, 'ch06_sampling')
+
+    fig, ax = plt.subplots(figsize=(5.8, 2.1))
+    t = np.linspace(0, 1, 2000)
+    ax.plot(t, np.cos(2 * np.pi * 9 * t), color=fs.RUST, lw=1.0, label='9 Hz')
+    ax.plot(t, np.cos(2 * np.pi * 1 * t), color=fs.NAVY, lw=1.4, label='1 Hz')
+    ts = np.arange(0, 1.0001, 0.1)
+    ax.plot(ts, np.cos(2 * np.pi * 1 * ts), 'o', color=fs.GOLD, ms=6, mec=fs.INK, label='samples at 10 Hz')
+    ax.legend(loc='lower right', ncol=3); ax.set_ylim(-1.5, 1.3); ax.set_xlabel('$t$ (s)', loc='right')
+    fig.tight_layout(); save(fig, 'ch06_alias')
+
+    fig, ax = plt.subplots(figsize=(5.8, 2.2))
+    x = np.array([1, 1, 1, 1])
+    w = np.linspace(0, 2 * np.pi, 800)
+    X = np.abs(sum(x[n] * np.exp(-1j * w * n) for n in range(4)))
+    ax.plot(w, X, color=fs.NAVY, label='$|X(e^{j\\omega})|$ (DTFT)')
+    for N, c, mk in [(4, fs.RUST, 'o'), (16, fs.TEAL, '.')]:
+        k = np.arange(N); wk = 2 * np.pi * k / N
+        ax.plot(wk, np.abs(np.fft.fft(x, N)), mk, color=c, ms=7 if N == 4 else 6, label=f'{N}-point DFT')
+    ax.set_xticks([0, np.pi / 2, np.pi, 3 * np.pi / 2, 2 * np.pi]); ax.set_xticklabels(['0', '$\\pi/2$', '$\\pi$', '$3\\pi/2$', '$2\\pi$'])
+    ax.legend(loc='upper center', ncol=3); ax.set_ylim(0, 5.3); ax.set_xlabel('$\\omega$', loc='right')
+    fig.tight_layout(); save(fig, 'ch06_dft')
+
+
+ALL = [ch1, ch2, ch3, ch4, ch5, ch6]
 
 if __name__ == '__main__':
     which = sys.argv[1:] or [f.__name__ for f in ALL]

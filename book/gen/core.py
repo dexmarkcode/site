@@ -80,6 +80,7 @@ def tex(e):
         return e
     out = _P.doprint(sp.sympify(e))
     out = out.replace(r'\left(t \right)', '(t)').replace(r'\left(n \right)', '(n)')
+    out = out.replace(r'\operatorname{atan}', r'\tan^{-1}').replace(r'\operatorname{atan_{2}}', r'\operatorname{atan2}')
     if re.search(r'\\[a-zA-Z]+$', out):
         out += ' '
     return out
@@ -229,6 +230,7 @@ _queues = {}
 
 def cyc(rng, key, options):
     """Draw from options without repetition until all have been used."""
+    key = (id(rng), key)
     q = _queues.get(key)
     if not q:
         q = list(options)

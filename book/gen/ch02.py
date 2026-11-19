@@ -234,7 +234,7 @@ def step_from_impulse(rng):
         s3 = A * (1 - a ** 4) / (1 - a)
         steps = [('Running sum', 'In discrete time the step response is $s[n] = \\sum_{k=-\\infty}^{n} h[k]$.'),
                  ('Geometric series', f"For $n \\ge 0$: $s[n] = {A}\\sum_{{k=0}}^{{n}} ({tex(a)})^k = {A}\\,\\dfrac{{1 - ({tex(a)})^{{n+1}}}}{{1 - {tex(a)}}} = {tex(A/(1-a))}\\left[1 - \\left({tex(a)}\\right)^{{n+1}}\\right]$."),
-                 ('Evaluate', f"$s[3] = {tex(A/(1-a))}\\left[1 - ({tex(a)})^4\\right] = {tex(s3)}$. Check by direct addition: " + ' + '.join(tex(A * a ** k) for k in range(4)) + f" $= {tex(s3)}$.")]
+                 ('Evaluate', f"$s[3] = {tex(A/(1-a))}\\left[1 - ({tex(a)})^4\\right] = {tex(s3)}$. Check by direct addition: $" + ' + '.join(par(A * a ** k) for k in range(4)) + f" = {tex(s3)}$.")]
         ans = f"$s[n] = {tex(A/(1-a))}[1 - ({tex(a)})^{{n+1}}]u[n]$, $s[3] = {tex(s3)}$."
     return Prob('B', st, steps, ans, 'Step response')
 
