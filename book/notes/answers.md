@@ -48,3 +48,20 @@
 5. 0.72 Ah per month over 48 hours of balancing: at least 15 mA, so a 50–100 mA design gives a comfortable margin.
 6. About 330 A (roughly 3.3C). In practice the limit is lower to avoid lithium plating, which is governed by anode potential rather than terminal voltage, and to allow for cell variation and temperature.
 7. About 24 minutes; average power about 111 kW.
+
+## Chapter 7
+1. *V*~r~ = 3.11 × 10^−3^ m^3^; *D* = *L* ≈ 158 mm.
+2. 340 N·m and 170 N·m; the higher-speed design needs about half the rotor volume.
+3. 900 Hz; about 22 switching periods per cycle.
+4. *n*~s~ = 4 500 rpm, slip 2 %; rotor copper loss ≈ 1.22 kW.
+6. 185 N·m in total, of which about 83 N·m (45 %) is reluctance torque.
+7. Peak phase back-EMF ≈ 245 V; line-to-line peak ≈ 424 V, comfortably below 800 V, so little field weakening is needed at this speed.
+
+## Chapter 8
+1. About 389 A, inside the 450 A current circle, so the machine can in principle sustain power at very high speed.
+2. 2.94 kW at 20 °C; 4.66 kW at 170 °C; about 7.46 kW with AC effects.
+3. 28.0 + 39.2 = 67.2 W/kg; with thinner laminations about 47.6 W/kg.
+4. About 96.7 %. Iron loss is largest: thinner or lower-loss steel, lower flux density at this point (gear ratio or control), or reduced harmonic content.
+6. 1.56 times more copper, so DC resistance falls to about 64 % of the stranded value.
+7. About 23 seconds.
+8. About 164 MPa; roughly 19 100 rpm for 150 MPa.
