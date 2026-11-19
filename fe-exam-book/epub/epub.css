@@ -40,3 +40,4 @@ pre { background: #F5F2EC; padding: 0.6em 0.9em; white-space: pre-wrap; text-ali
 blockquote { font-style: italic; color: #444; margin: 1em 6%; }
 math { font-size: 1.05em; }
 nav#toc ol { list-style: none; }
+.question p, .solution p, .box p, li { text-align: left; }

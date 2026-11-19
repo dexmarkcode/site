@@ -150,6 +150,11 @@ function Pandoc(doc)
 end
 
 function Math(el)
+  if not is_latex then
+    local t = el.text:gsub("\\dfrac", "\\frac"):gsub("\\tfrac", "\\frac"):gsub("\\displaystyle", "")
+    el.text = t
+    return el
+  end
   if is_latex and el.mathtype == "DisplayMath" then
     return pandoc.RawInline("latex", "\\fitmath{" .. el.text .. "}")
   end
