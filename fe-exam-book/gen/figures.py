@@ -436,6 +436,237 @@ def _():
     save(f, "fig06_pole_zero")
 
 
+# ------------------------------------------------------------------ Chapter 7
+@fig("fig07_square_fourier")
+def _():
+    t = np.linspace(0, 2, 1200)
+    sq = np.sign(np.sin(2 * np.pi * t))
+    f, ax = plt.subplots(figsize=(6.4, 3.2))
+    ax.plot(t, sq, color="#BBBBBB", lw=2.2, label="Square wave")
+    for N, c in [(1, TEAL), (3, COPPER), (15, INK)]:
+        y = sum(4 / (np.pi * n) * np.sin(2 * np.pi * n * t) for n in range(1, N + 1, 2))
+        ax.plot(t, y, color=c, lw=1.4, label="Fundamental only" if N == 1 else f"Harmonics up to {N}")
+    ax.set_xlabel("Time (periods)"); ax.set_ylabel("Amplitude ($A = 1$)")
+    ax.legend(fontsize=8.5, ncol=2, loc="lower left"); ax.set_ylim(-1.7, 1.7)
+    save(f, "fig07_square_fourier")
+
+
+@fig("fig07_sampling")
+def _():
+    t = np.linspace(0, 2e-3, 2000)
+    fs = 8000
+    ts = np.arange(0, 2e-3 + 1e-9, 1 / fs)
+    f, ax = plt.subplots(figsize=(6.6, 3.0))
+    ax.plot(t * 1e3, np.cos(2 * np.pi * 7000 * t), color=COPPER, alpha=0.45, lw=1, label="7 kHz input")
+    ax.plot(t * 1e3, np.cos(2 * np.pi * 1000 * t), color=INK, lw=1.8, label="1 kHz alias")
+    ax.plot(ts * 1e3, np.cos(2 * np.pi * 7000 * ts), "o", color=RED, ms=6, label="Samples at 8 kHz")
+    ax.set_xlabel("Time (ms)"); ax.set_yticks([-1, 0, 1]); ax.legend(loc="lower right", fontsize=8.5, ncol=3)
+    ax.set_ylim(-1.5, 1.25)
+    save(f, "fig07_sampling")
+
+
+@fig("fig07_filters")
+def _():
+    f, ax = blank(7.0, 4.0)
+    ax.set_xlim(0, 14); ax.set_ylim(-0.8, 7.2)
+    def add(x, y):
+        ax.add_patch(Circle((x, y), 0.32, fc="white", ec=INK, lw=1.2)); ax.text(x, y, "+", ha="center", va="center", fontsize=13, color=INK)
+    def gain(x, y, lab):
+        ax.add_patch(Polygon([(x - 0.35, y + 0.35), (x - 0.35, y - 0.35), (x + 0.35, y)], fc=LIGHT, ec=COPPER, lw=1.2))
+        ax.text(x - 0.5, y + 0.45, lab, fontsize=10, color=COPPER)
+    # FIR
+    ax.text(0.2, 6.8, "FIR:  $y[n] = b_0x[n] + b_1x[n-1] + b_2x[n-2]$", fontsize=10.5, color=INK)
+    ax.text(0.2, 5.6, "$x[n]$", fontsize=11)
+    xs = [1.6, 5.0, 8.4]
+    ax.plot([1.0, 9.0], [5.6, 5.6], color="#333")
+    for x0 in [3.0, 6.4]:
+        box(ax, x0, 5.25, 1.0, 0.7, "$z^{-1}$", fc="white")
+    for i, x in enumerate(xs):
+        ax.plot([x, x], [5.6, 4.6], color="#333"); gain(x, 4.25, f"$b_{i}$"); ax.plot([x, x], [3.9, 3.3], color="#333")
+    ax.plot([1.6, 10.8], [3.0, 3.0], color="#333")
+    for x in xs[1:]:
+        add(x, 3.0)
+    arrow(ax, (8.75, 3.0), (11.5, 3.0)); ax.text(11.6, 2.9, "$y[n]$", fontsize=11)
+    # IIR
+    ax.text(0.2, 1.95, "IIR:  $y[n] = x[n] + a\\,y[n-1]$", fontsize=10.5, color=INK)
+    ax.text(0.2, 0.95, "$x[n]$", fontsize=11)
+    arrow(ax, (1.2, 1.0), (4.65, 1.0)); add(5.0, 1.0)
+    arrow(ax, (5.35, 1.0), (11.5, 1.0)); ax.text(11.6, 0.9, "$y[n]$", fontsize=11)
+    ax.plot([9.5, 9.5], [1.0, 0.2], color="#333"); ax.plot([9.5, 8.6], [0.2, 0.2], color="#333")
+    box(ax, 7.6, -0.15, 1.0, 0.7, "$z^{-1}$", fc="white")
+    ax.plot([7.6, 6.8], [0.2, 0.2], color="#333"); gain(6.45, 0.2, "$a$")
+    ax.plot([6.1, 5.0, 5.0], [0.2, 0.2, 0.68], color="#333")
+    save(f, "fig07_filters")
+
+
+# ------------------------------------------------------------------ Chapter 8
+@fig("fig08_diode_iv")
+def _():
+    f, ax = plt.subplots(figsize=(5.8, 3.4))
+    v = np.linspace(-0.2, 0.78, 400)
+    i = 1e-12 * (np.exp(v / 0.035) - 1)
+    ax.plot(v, np.clip(i * 1e3, -1, 30), color=INK)
+    vr = np.linspace(-5.6, -0.2, 200)
+    ir = np.where(vr < -5.1, -(np.abs(vr) - 5.1) * 60, -0.05 * np.ones_like(vr))
+    ax.plot(vr, ir, color=COPPER)
+    ax.axhline(0, color="#444", lw=0.8); ax.axvline(0, color="#444", lw=0.8)
+    ax.annotate("Forward conduction\nnear 0.7 V", xy=(0.7, 12), xytext=(-2.6, 18), arrowprops=dict(arrowstyle="->", color=GREY), fontsize=9.5)
+    ax.annotate("Zener / breakdown\nregion", xy=(-5.3, -12), xytext=(-4.4, -25), arrowprops=dict(arrowstyle="->", color=GREY), fontsize=9.5, color=COPPER)
+    ax.text(-2.8, 1.5, "Reverse bias: tiny leakage", fontsize=9, color=GREY)
+    ax.set_xlabel("Diode voltage $v_D$ (V)"); ax.set_ylabel("Current $i_D$ (mA)"); ax.set_ylim(-32, 30); ax.set_xlim(-6, 1.2)
+    save(f, "fig08_diode_iv")
+
+
+@fig("fig08_rectifier")
+def _():
+    t = np.linspace(0, 3 / 60, 3000)
+    vin = np.abs(np.sin(2 * np.pi * 60 * t))
+    hw = np.where(np.sin(2 * np.pi * 60 * t) > 0, np.sin(2 * np.pi * 60 * t), 0)
+    def cap(src, tau):
+        out = np.zeros_like(src); v = 0
+        dt = t[1] - t[0]
+        for k, s in enumerate(src):
+            v = max(s, v * np.exp(-dt / tau)); out[k] = v
+        return out
+    f, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 2.8), sharey=True)
+    a1.plot(t * 1e3, hw, color=GREY, lw=1, ls="--", label="Rectified"); a1.plot(t * 1e3, cap(hw, 0.08), color=INK, label="With capacitor")
+    a2.plot(t * 1e3, vin, color=GREY, lw=1, ls="--"); a2.plot(t * 1e3, cap(vin, 0.08), color=COPPER)
+    a1.set_title("Half-wave", fontsize=10); a2.set_title("Full-wave", fontsize=10)
+    for a in (a1, a2):
+        a.set_xlabel("Time (ms)"); a.set_ylim(-0.05, 1.12)
+    a1.set_ylabel("$v/V_p$"); a1.legend(fontsize=8, loc="lower right")
+    save(f, "fig08_rectifier")
+
+
+@fig("fig08_bjt_bias")
+def _():
+    with schemdraw.Drawing(show=False) as d:
+        d.config(unit=2.2)
+        Q = elm.BjtNpn(circle=True).label("Q", loc="right")
+        elm.Resistor().at(Q.collector).up().label("$R_C$", loc="bottom")
+        top = elm.Dot()
+        elm.Resistor().at(Q.emitter).down().label("$R_E$", loc="bottom")
+        bot = elm.Dot()
+        elm.Line().at(Q.base).left().length(1.5)
+        b = elm.Dot()
+        elm.Resistor().up().toy(top.center).label("$R_1$")
+        elm.Line().to(top.center)
+        elm.Line().right().at(top.center).length(1.2).label("$+V_{CC}$", loc="right")
+        elm.Resistor().at(b.center).down().toy(bot.center).label("$R_2$")
+        elm.Line().to(bot.center)
+        elm.Ground().at(bot.center)
+    sch_save(d, "fig08_bjt_bias")
+
+
+@fig("fig08_opamps")
+def _():
+    from PIL import Image
+    paths = []
+    for kind in ("inv", "noninv"):
+        with schemdraw.Drawing(show=False) as d:
+            d.config(unit=2.2, fontsize=13)
+            op = elm.Opamp(leads=True, flip=(kind != "inv"))
+            if kind == "inv":
+                elm.Line().at(op.in2).left().length(0.6)
+                elm.Ground()
+                elm.Line().at(op.in1).left().length(0.6)
+                n = elm.Dot()
+                elm.Resistor().left().label("$R_{in}$")
+                elm.Dot(open=True).label("$v_{in}$", loc="left")
+            else:
+                elm.Line().at(op.in2).left().length(2.8)
+                elm.Dot(open=True).label("$v_{in}$", loc="left")
+                elm.Line().at(op.in1).left().length(0.6)
+                n = elm.Dot()
+                elm.Line().left().length(1.4)
+                elm.Resistor().down().label("$R_1$", loc="bottom")
+                elm.Ground()
+            if kind == "inv":
+                elm.Line().at(n.center).up().length(1.4)
+                elm.Resistor().right().tox(op.out).label("$R_f$")
+                elm.Line().down().toy(op.out)
+            else:
+                elm.Line().at(n.center).down().length(1.4)
+                elm.Resistor().right().tox(op.out).label("$R_f$", loc="bottom")
+                elm.Line().up().toy(op.out)
+            elm.Dot()
+            elm.Line().at(op.out).right().length(0.8)
+            elm.Dot(open=True).label("$v_{out}$", loc="right")
+            elm.Label().at((op.out[0] - 2.5, op.out[1] - (2.6 if kind == "inv" else 3.4))).label("Inverting:  $v_{out} = -(R_f/R_{in})\\,v_{in}$" if kind == "inv" else "Non-inverting:  $v_{out} = (1 + R_f/R_1)\\,v_{in}$", fontsize=12)
+        pth = os.path.join(OUT, f"_tmp_{kind}.png"); d.save(pth, dpi=260); plt.close("all"); paths.append(pth)
+    ims = [Image.open(p).convert("RGB") for p in paths]
+    h = max(i.height for i in ims)
+    out = Image.new("RGB", (sum(i.width for i in ims) + 120, h), "white")
+    x = 0
+    for i in ims:
+        out.paste(i, (x, (h - i.height) // 2)); x += i.width + 120
+    out.save(os.path.join(OUT, "fig08_opamps.png"))
+    for p in paths:
+        os.remove(p)
+
+
+# ------------------------------------------------------------------ Chapter 9
+@fig("fig09_field_lines")
+def _():
+    x, y = np.meshgrid(np.linspace(-3, 3, 300), np.linspace(-2.2, 2.2, 240))
+    def E(q, x0):
+        dx, dy = x - x0, y; r3 = (dx ** 2 + dy ** 2) ** 1.5 + 1e-9
+        return q * dx / r3, q * dy / r3
+    ex1, ey1 = E(1, -1); ex2, ey2 = E(-1, 1)
+    f, ax = plt.subplots(figsize=(5.6, 4.0))
+    ax.streamplot(x, y, ex1 + ex2, ey1 + ey2, color=INK, density=1.3, linewidth=0.8, arrowsize=0.9)
+    ax.add_patch(Circle((-1, 0), 0.17, color=RED)); ax.text(-1, 0, "+", color="white", ha="center", va="center", fontsize=13, fontweight="bold")
+    ax.add_patch(Circle((1, 0), 0.17, color=INK)); ax.text(1, -0.02, "−", color="white", ha="center", va="center", fontsize=14, fontweight="bold")
+    ax.set_aspect("equal"); ax.axis("off")
+    save(f, "fig09_field_lines")
+
+
+@fig("fig09_capacitor")
+def _():
+    f, ax = blank(5.4, 3.0)
+    ax.set_xlim(0, 10); ax.set_ylim(0, 5.5)
+    ax.add_patch(Rectangle((1.5, 4.0), 7, 0.25, fc=RED, ec="none")); ax.add_patch(Rectangle((1.5, 1.0), 7, 0.25, fc=INK, ec="none"))
+    ax.add_patch(Rectangle((1.5, 1.25), 7, 2.75, fc=COPPER, alpha=0.13, ec="none"))
+    for k in range(9):
+        x = 2.0 + 0.75 * k
+        arrow(ax, (x, 3.9), (x, 1.35), color=COPPER, lw=1)
+    for k in range(10):
+        ax.text(1.8 + 0.7 * k, 4.4, "+", color=RED, fontsize=11, ha="center"); ax.text(1.8 + 0.7 * k, 0.55, "−", color=INK, fontsize=12, ha="center")
+    ax.annotate("", xy=(9.2, 4.0), xytext=(9.2, 1.25), arrowprops=dict(arrowstyle="<->", color="#333")); ax.text(9.4, 2.55, "$d$", fontsize=13)
+    ax.text(5.0, 2.55, "$E = V/d$\ndielectric $\\varepsilon_r$", ha="center", va="center", fontsize=10.5, color=INK, bbox=dict(fc="white", ec="none", alpha=0.8))
+    ax.text(0.3, 4.1, "Area $A$", fontsize=10)
+    save(f, "fig09_capacitor")
+
+
+@fig("fig09_standing_wave")
+def _():
+    z = np.linspace(0, 1.5, 600)
+    f, ax = plt.subplots(figsize=(6.2, 3.2))
+    for G, c, lab in [(0, TEAL, "Matched ($\\Gamma = 0$, VSWR = 1)"), (1 / 3, COPPER, "$|\\Gamma| = 1/3$ (VSWR = 2)"), (0.8, RED, "$|\\Gamma| = 0.8$ (VSWR = 9)")]:
+        env = np.abs(1 + G * np.exp(-1j * 4 * np.pi * z))
+        ax.plot(z, env, color=c, label=lab)
+    ax.set_xlabel("Distance from load (wavelengths)"); ax.set_ylabel("$|V(z)|/|V^+|$")
+    ax.invert_xaxis(); ax.legend(fontsize=8.5, loc="upper right"); ax.set_ylim(0, 2.05)
+    save(f, "fig09_standing_wave")
+
+
+@fig("fig09_bh_curve")
+def _():
+    H = np.linspace(-1, 1, 400)
+    up = np.tanh(3.2 * (H + 0.25)); dn = np.tanh(3.2 * (H - 0.25))
+    f, ax = plt.subplots(figsize=(5.2, 3.8))
+    ax.plot(H, up, color=INK); ax.plot(H, dn, color=INK)
+    ax.plot(H, 0.55 * np.tanh(3.2 * (H + 0.06)), color=TEAL, ls="--", lw=1.2, label="Soft material")
+    ax.axhline(0, color="#444", lw=0.8); ax.axvline(0, color="#444", lw=0.8)
+    br = np.tanh(3.2 * 0.25)
+    ax.plot(0, br, "o", color=COPPER); ax.text(0.05, br + 0.06, "$B_r$ (remanence)", color=COPPER, fontsize=9.5)
+    ax.plot(-0.25, 0, "o", color=COPPER); ax.text(-0.95, 0.1, "$-H_c$ (coercive force)", color=COPPER, fontsize=9.5)
+    ax.text(0.55, 1.08, "saturation", fontsize=9, color=GREY)
+    ax.set_xlabel("Magnetic field intensity $H$"); ax.set_ylabel("Flux density $B$"); ax.set_xticks([]); ax.set_yticks([])
+    ax.legend(loc="lower right", fontsize=8.5)
+    save(f, "fig09_bh_curve")
+
+
 if __name__ == "__main__":
     names = sys.argv[1:] or list(FIGS)
     for n in names:
