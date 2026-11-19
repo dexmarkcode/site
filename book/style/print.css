@@ -38,7 +38,7 @@
 @page cover { margin: 0; @top-left { content: none; } @top-right { content: none; } @top-center { content: none; } }
 
 html { string-set: booktitle "Circuit Analysis Made Simple"; }
-body { font-family: "Crimson", serif; font-size: 11.3pt; line-height: 1.42; color: #1a1a1a; text-align: justify; hyphens: auto; font-variant-numeric: oldstyle-nums proportional-nums; orphans: 3; widows: 3; }
+body { font-family: "Crimson", "Garamond", "DejaVu Serif", "DejaVu Sans", serif; font-size: 11.3pt; line-height: 1.42; color: #1a1a1a; text-align: justify; hyphens: auto; font-variant-numeric: oldstyle-nums proportional-nums; orphans: 3; widows: 3; }
 
 /* ---- Cover / title pages ---- */
 .cover { page: cover; height: 9in; width: 6in; break-after: page; }
