@@ -870,6 +870,242 @@ def _():
     save(f, "fig12_qam")
 
 
+# ------------------------------------------------------------------ Chapter 13
+@fig("fig13_gates")
+def _():
+    from PIL import Image
+    gates = [("AND", logic.And, "$AB$"), ("OR", logic.Or, "$A + B$"), ("NOT", logic.Not, "$\\overline{A}$"),
+             ("NAND", logic.Nand, "$\\overline{AB}$"), ("NOR", logic.Nor, "$\\overline{A + B}$"), ("XOR", logic.Xor, "$A \\oplus B$")]
+    paths = []
+    for name, G, expr in gates:
+        with schemdraw.Drawing(show=False) as d:
+            d.config(fontsize=13)
+            g = G().label(name, loc="center", fontsize=9) if False else G()
+            elm.Label().at((g.out[0] / 2 + 0.1, -1.55)).label(name, fontsize=13, color=COPPER)
+            elm.Label().at((g.out[0] / 2 + 0.1, -2.2)).label(expr, fontsize=13)
+        pth = os.path.join(OUT, f"_g_{name}.png"); d.save(pth, dpi=240); plt.close("all"); paths.append(pth)
+    ims = [Image.open(p).convert("RGB") for p in paths]
+    cw = max(i.width for i in ims) + 60; ch = max(i.height for i in ims) + 30
+    out = Image.new("RGB", (cw * 3, ch * 2), "white")
+    for k, im in enumerate(ims):
+        out.paste(im, ((k % 3) * cw + (cw - im.width) // 2, (k // 3) * ch + (ch - im.height) // 2))
+    out.save(os.path.join(OUT, "fig13_gates.png"))
+    for p in paths:
+        os.remove(p)
+
+
+@fig("fig13_kmap")
+def _():
+    ones = {1, 5, 6, 7}
+    cols = ["00", "01", "11", "10"]; colv = [0, 1, 3, 2]
+    f, ax = blank(4.6, 2.9)
+    ax.set_xlim(-1.4, 4.2); ax.set_ylim(-0.6, 3.0)
+    ax.text(-1.1, 2.55, "$A$", fontsize=12); ax.text(-0.55, 2.75, "$BC$", fontsize=12)
+    ax.plot([-1.2, 0], [2.95, 2.0], color="#333", lw=0.8)
+    for j, c in enumerate(cols):
+        ax.text(j + 0.5, 2.25, c, ha="center", fontsize=11, color=INK)
+    for i in range(2):
+        ax.text(-0.35, 1.5 - i + 0.0, str(i), ha="center", va="center", fontsize=11, color=INK)
+        for j in range(4):
+            m = i * 4 + colv[j]
+            ax.add_patch(Rectangle((j, 1 - i), 1, 1, fc="white", ec="#333", lw=1))
+            ax.text(j + 0.5, 1.5 - i, "1" if m in ones else "0", ha="center", va="center", fontsize=13, color="#1a1a1a" if m in ones else "#AAAAAA")
+            ax.text(j + 0.9, 1.1 - i, f"m{m}", fontsize=6.5, color=GREY, ha="right")
+    ax.add_patch(FancyBboxPatch((1.1, 0.1), 0.8, 1.8, boxstyle="round,pad=0.02,rounding_size=0.3", fc="none", ec=COPPER, lw=2))
+    ax.add_patch(FancyBboxPatch((2.08, 0.16), 1.84, 0.7, boxstyle="round,pad=0.02,rounding_size=0.3", fc="none", ec=TEAL, lw=2))
+    ax.text(1.5, -0.35, "$\\overline{B}C$", color=COPPER, ha="center", fontsize=12)
+    ax.text(3.0, -0.35, "$AB$", color=TEAL, ha="center", fontsize=12)
+    save(f, "fig13_kmap")
+
+
+@fig("fig13_counter")
+def _():
+    f, ax = blank(6.6, 2.8)
+    n = 9
+    def wave(y, period, lab, c):
+        xs, ys = [], []
+        for k in range(n * 2 + 1):
+            t = k * 0.5
+            v = (int(t // (period / 2)) % 2) if period else 0
+            xs += [t, t]; ys += [ys[-1] if ys else y, y + 0.7 * v]
+        ax.step(np.arange(0, n * 2 + 0.01, 0.5) if False else xs, ys, color=c, lw=1.6)
+        ax.text(-0.4, y + 0.3, lab, ha="right", va="center", fontsize=11)
+    # clock
+    xs, ys = [0], [3.2]
+    for k in range(2 * n):
+        t = k * 0.5
+        v = 0.7 if k % 2 == 0 else 0
+        xs += [t, t + 0.5]; ys += [3.2 + v, 3.2 + v]
+    ax.plot(xs, ys, color=GREY, lw=1.4); ax.text(-0.4, 3.5, "CLK", ha="right", va="center", fontsize=10)
+    for i, (lab, c) in enumerate([("$Q_0$", INK), ("$Q_1$", COPPER), ("$Q_2$", TEAL)]):
+        y = 2.1 - i * 1.05
+        period = 2 ** (i + 1)
+        xs, ys = [], []
+        for k in range(n * 2):
+            t = k * 0.5
+            v = ((k // 2 + 0) // (period // 2)) % 2 if k >= 1 else 0
+            v = (((k + 1) // 2) // (2 ** i)) % 2
+            xs += [t, t + 0.5]; ys += [y + 0.7 * v, y + 0.7 * v]
+        ax.plot(xs, ys, color=c, lw=1.6); ax.text(-0.4, y + 0.35, lab, ha="right", va="center", fontsize=11)
+    for k in range(n):
+        ax.axvline(k + 0.5 - 0.5 + 0.5 if False else k * 1.0 + 0.5, color="#DDDDDD", lw=0.7, zorder=0)
+    for k in range(8):
+        ax.text(k + 1.0, -0.35, f"{k + 1 if k < 7 else 0}", ha="center", fontsize=8.5, color=GREY)
+    ax.text(4.5, -0.75, "count after each rising edge", ha="center", fontsize=8.5, color=GREY)
+    ax.set_xlim(-1.3, 9.2); ax.set_ylim(-0.9, 4.1)
+    save(f, "fig13_counter")
+
+
+@fig("fig13_fsm")
+def _():
+    f, ax = blank(6.0, 2.9)
+    ax.set_xlim(0, 12); ax.set_ylim(0, 5.4)
+    st = [(2, 2.6, "S0", "0"), (6, 2.6, "S1", "0"), (10, 2.6, "S2", "1")]
+    for x, y, n_, o in st:
+        ax.add_patch(Circle((x, y), 0.95, fc=LIGHT, ec=INK, lw=1.5))
+        ax.text(x, y + 0.2, n_, ha="center", va="center", fontsize=12, fontweight="bold", color=INK)
+        ax.text(x, y - 0.35, f"out = {o}", ha="center", va="center", fontsize=9, color=COPPER)
+    arrow(ax, (2.95, 2.9), (5.05, 2.9)); ax.text(4.0, 3.1, "1", fontsize=11)
+    arrow(ax, (6.95, 2.9), (9.05, 2.9)); ax.text(8.0, 3.1, "1", fontsize=11)
+    arrow(ax, (5.2, 2.1), (2.8, 2.1), cs="arc3,rad=-0.3"); ax.text(4.0, 1.25, "0", fontsize=11)
+    arrow(ax, (9.3, 1.85), (2.6, 1.75), cs="arc3,rad=-0.35"); ax.text(6.0, 0.25, "0", fontsize=11)
+    arrow(ax, (1.4, 3.35), (2.3, 3.5), cs="arc3,rad=-2.2"); ax.text(1.0, 4.35, "0", fontsize=11)
+    arrow(ax, (9.7, 3.5), (10.6, 3.35), cs="arc3,rad=-2.2"); ax.text(10.9, 4.35, "1", fontsize=11)
+    arrow(ax, (0.0, 2.6), (1.05, 2.6)); ax.text(0.05, 2.75, "reset", fontsize=8.5, color=GREY)
+    save(f, "fig13_fsm")
+
+
+# ------------------------------------------------------------------ Chapter 14
+@fig("fig14_pipeline")
+def _():
+    stages = ["IF", "ID", "EX", "MEM", "WB"]
+    cols = ["#8FA9D6", INK, COPPER, TEAL, GREY]
+    f, ax = blank(6.8, 2.7)
+    for i in range(5):
+        for s_, (st_, c) in enumerate(zip(stages, cols)):
+            ax.add_patch(Rectangle((i + s_, 4 - i), 0.95, 0.8, fc=c, ec="white", alpha=0.9))
+            ax.text(i + s_ + 0.475, 4.4 - i, st_, ha="center", va="center", color="white", fontsize=8.5, fontweight="bold")
+        ax.text(-0.15, 4.4 - i, f"Instr {i + 1}", ha="right", va="center", fontsize=9.5)
+    for c in range(9):
+        ax.text(c + 0.475, -0.35, f"{c + 1}", ha="center", fontsize=8.5, color=GREY)
+    ax.text(4.5, -0.85, "Clock cycle", ha="center", fontsize=9.5, color=GREY)
+    ax.set_xlim(-1.5, 9.2); ax.set_ylim(-1.1, 5.0)
+    save(f, "fig14_pipeline")
+
+
+@fig("fig14_memory")
+def _():
+    f, ax = blank(5.4, 3.6)
+    levels = [("Registers", "< 1 ns", "bytes"), ("L1 cache", "~1 ns", "tens of KB"), ("L2/L3 cache", "~3–15 ns", "MB"),
+              ("Main memory (DRAM)", "~60–100 ns", "GB"), ("SSD / disk", "μs–ms", "TB")]
+    cols = [RED, COPPER, "#C9813A", INK, GREY]
+    n = len(levels)
+    for i, ((lab, t, sz), c) in enumerate(zip(levels, cols)):
+        y0 = n - 1 - i
+        half_top = 1.3 + 0.75 * i; half_bot = 1.3 + 0.75 * (i + 1)
+        ax.add_patch(Polygon([(5 - half_bot, y0), (5 + half_bot, y0), (5 + half_top, y0 + 0.92), (5 - half_top, y0 + 0.92)], fc=c, ec="white", alpha=0.9))
+        ax.text(5, y0 + 0.46, lab, ha="center", va="center", color="white", fontsize=9.5, fontweight="bold")
+        ax.text(10.2, y0 + 0.46, f"{t}   |   {sz}", va="center", fontsize=8.8, color="#333")
+    ax.text(10.2, n + 0.1, "access time  |  capacity", fontsize=8.8, color=GREY)
+    arrow(ax, (-0.6, 0.2), (-0.6, 4.6), color=GREY); ax.text(-1.0, 2.4, "faster, costlier per bit", rotation=90, va="center", ha="center", fontsize=8.5, color=GREY)
+    ax.set_xlim(-1.4, 14.8); ax.set_ylim(-0.2, 5.6)
+    save(f, "fig14_memory")
+
+
+@fig("fig14_osi")
+def _():
+    f, ax = blank(6.8, 3.9)
+    osi = ["Application", "Presentation", "Session", "Transport", "Network", "Data link", "Physical"]
+    ex = ["HTTP, DNS, SMTP, FTP", "TLS, encoding", "sessions", "TCP, UDP (ports)", "IP, ICMP · routers", "Ethernet, Wi-Fi · switches", "cables, signals · hubs"]
+    for i, (o, e) in enumerate(zip(osi, ex)):
+        y = 6 - i
+        c = [TEAL, TEAL, TEAL, COPPER, INK, "#5B4B8A", GREY][i]
+        ax.add_patch(Rectangle((0, y), 3.2, 0.9, fc=c, ec="white", alpha=0.92))
+        ax.text(0.15, y + 0.45, f"{7 - i}", va="center", color="white", fontsize=9, fontweight="bold")
+        ax.text(1.75, y + 0.45, o, va="center", ha="center", color="white", fontsize=9.5, fontweight="bold")
+        ax.text(7.9, y + 0.45, e, va="center", fontsize=9, color="#333")
+    tcp = [("Application", 4, 3, TEAL), ("Transport", 3, 1, COPPER), ("Internet", 2, 1, INK), ("Link", 0, 2, "#5B4B8A")]
+    for lab, y0, h, c in tcp:
+        ax.add_patch(Rectangle((3.5, y0), 3.2, h - 0.1, fc=c, ec="white", alpha=0.75))
+        ax.text(5.1, y0 + (h - 0.1) / 2, lab, ha="center", va="center", color="white", fontsize=9.5, fontweight="bold")
+    ax.text(1.6, 7.15, "OSI", ha="center", fontsize=11, color=INK, fontweight="bold")
+    ax.text(5.1, 7.15, "TCP/IP", ha="center", fontsize=11, color=INK, fontweight="bold")
+    ax.text(7.9, 7.15, "Examples", fontsize=11, color=INK, fontweight="bold")
+    ax.set_xlim(-0.2, 12.5); ax.set_ylim(-0.2, 7.6)
+    save(f, "fig14_osi")
+
+
+# ------------------------------------------------------------------ Chapter 15
+@fig("fig15_bigO")
+def _():
+    n = np.linspace(1, 40, 400)
+    f, ax = plt.subplots(figsize=(5.8, 3.4))
+    for y, lab, c in [(np.ones_like(n), "$O(1)$", GREY), (np.log2(n), "$O(\\log n)$", TEAL), (n, "$O(n)$", INK),
+                      (n * np.log2(n), "$O(n\\log n)$", COPPER), (n ** 2, "$O(n^2)$", RED), (2 ** n, "$O(2^n)$", "#5B4B8A")]:
+        ax.plot(n, y, color=c, label=lab)
+    ax.set_ylim(0, 400); ax.set_xlim(1, 40)
+    ax.set_xlabel("Input size $n$"); ax.set_ylabel("Operations"); ax.legend(loc="upper left", fontsize=9, ncol=2)
+    save(f, "fig15_bigO")
+
+
+@fig("fig15_structures")
+def _():
+    f, ax = blank(7.2, 3.9)
+    ax.set_xlim(0, 16); ax.set_ylim(0, 8.6)
+    # array
+    ax.text(0.2, 8.1, "Array", fontsize=10.5, color=INK, fontweight="bold")
+    for i, v in enumerate([7, 3, 9, 1, 5]):
+        ax.add_patch(Rectangle((0.2 + i * 0.9, 6.8), 0.9, 0.9, fc=LIGHT, ec=INK)); ax.text(0.65 + i * 0.9, 7.25, str(v), ha="center", va="center")
+        ax.text(0.65 + i * 0.9, 6.5, f"[{i}]", ha="center", fontsize=8, color=GREY)
+    # linked list
+    ax.text(6.0, 8.1, "Linked list", fontsize=10.5, color=INK, fontweight="bold")
+    for i, v in enumerate([7, 3, 9]):
+        x = 6.0 + i * 2.2
+        ax.add_patch(Rectangle((x, 6.8), 0.9, 0.9, fc=LIGHT, ec=INK)); ax.text(x + 0.45, 7.25, str(v), ha="center", va="center")
+        ax.add_patch(Rectangle((x + 0.9, 6.8), 0.45, 0.9, fc="white", ec=INK))
+        if i < 2:
+            arrow(ax, (x + 1.12, 7.25), (x + 2.2, 7.25), ms=9)
+        else:
+            ax.text(x + 1.6, 7.25, "∅", va="center")
+    # stack
+    ax.text(0.2, 5.4, "Stack (LIFO)", fontsize=10.5, color=INK, fontweight="bold")
+    for i, v in enumerate(["A", "B", "C"]):
+        ax.add_patch(Rectangle((0.8, 1.2 + i * 1.0), 1.6, 0.95, fc=LIGHT, ec=INK)); ax.text(1.6, 1.67 + i * 1.0, v, ha="center", va="center")
+    arrow(ax, (3.3, 4.6), (2.5, 3.7), color=COPPER); ax.text(3.3, 4.7, "push/pop", color=COPPER, fontsize=9)
+    # queue
+    ax.text(4.6, 5.4, "Queue (FIFO)", fontsize=10.5, color=INK, fontweight="bold")
+    for i, v in enumerate(["A", "B", "C", "D"]):
+        ax.add_patch(Rectangle((4.8 + i * 0.95, 3.2), 0.95, 0.95, fc=LIGHT, ec=INK)); ax.text(5.27 + i * 0.95, 3.67, v, ha="center", va="center")
+    arrow(ax, (4.75, 3.67), (4.0, 3.67), color=COPPER); ax.text(3.9, 2.7, "dequeue", fontsize=8.5, color=COPPER)
+    arrow(ax, (9.6, 3.67), (8.65, 3.67), color=TEAL); ax.text(8.7, 2.7, "enqueue", fontsize=8.5, color=TEAL)
+    # BST
+    ax.text(11.2, 5.4, "Binary search tree", fontsize=10.5, color=INK, fontweight="bold")
+    nodes = {8: (13.2, 4.3), 3: (11.8, 2.8), 10: (14.6, 2.8), 1: (11.1, 1.3), 6: (12.5, 1.3), 14: (15.3, 1.3)}
+    for a_, b_ in [(8, 3), (8, 10), (3, 1), (3, 6), (10, 14)]:
+        ax.plot(*zip(nodes[a_], nodes[b_]), color="#333", lw=1, zorder=1)
+    for k, (x, y) in nodes.items():
+        ax.add_patch(Circle((x, y), 0.42, fc=LIGHT, ec=INK, zorder=2)); ax.text(x, y, str(k), ha="center", va="center", zorder=3)
+    save(f, "fig15_structures")
+
+
+@fig("fig15_vmodel")
+def _():
+    f, ax = blank(6.6, 3.4)
+    left = ["Requirements", "System design", "Architecture", "Module design"]
+    right = ["Acceptance test", "System test", "Integration test", "Unit test"]
+    for i, (l, r) in enumerate(zip(left, right)):
+        y = 4 - i
+        xl = 0.2 + i * 0.75; xr = 13.8 - i * 0.75 - 3.0
+        box(ax, xl, y, 3.0, 0.75, l, fc=LIGHT, ec=INK, fs=9.5)
+        box(ax, xr, y, 3.0, 0.75, r, fc=LIGHT, ec=COPPER, fs=9.5)
+        ax.annotate("", xy=(xr, y + 0.37), xytext=(xl + 3.0, y + 0.37), arrowprops=dict(arrowstyle="<->", color=GREY, ls="--", lw=0.9))
+    box(ax, 5.1, 0, 3.6, 0.75, "Implementation (coding)", fc=INK, ec=INK, fs=9.5, tc="white")
+    ax.text(1.0, 0.3, "Verification and design", fontsize=9, color=INK, style="italic")
+    ax.text(13.6, 0.3, "Testing", fontsize=9, color=COPPER, style="italic", ha="right")
+    ax.set_xlim(0, 14); ax.set_ylim(-0.3, 5.0)
+    save(f, "fig15_vmodel")
+
+
 if __name__ == "__main__":
     names = sys.argv[1:] or list(FIGS)
     for n in names:
