@@ -89,3 +89,12 @@
 4. 4.0 V, the same as the IGBT example: the shorter dead time is offset by the higher frequency and voltage, but relative to an 800 V link the error is half as large.
 5. About 148 A at *M* = 0.6 and 138 A at *M* = 0.9; ripple current peaks at intermediate modulation index rather than at maximum.
 7. 325 A, within the 450 A rating, so ASC can be sustained at high speed.
+
+## Chapter 12
+1. *D* ≈ 0.533; ripple ≈ 49.8 A peak-to-peak.
+2. 100 A per phase; combined ripple at 60 kHz (three times the switching frequency), with reduced amplitude.
+4. About 11.1 kW at 30°; maximum 20 kW at 90°.
+5. About 1.68 A input; losses about 63 W.
+6. About 37.5 days.
+7. 15.9 A per phase for 11 kW three-phase; 32.2 A for 7.4 kW single-phase.
+8. About 0.61 mF.
