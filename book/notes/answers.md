@@ -113,3 +113,7 @@
 4. A typical classification: S3 (head-on collision possible), E2–E3 (overtaking on two-lane roads is occasional to frequent), C2–C3. With E3 and C2 the sum is 8: ASIL B; arguments for C3 would give ASIL C. Document the reasoning.
 5. Total reaction time 90 ms, well within the 2.5 s FTTI; about 2.41 s of margin.
 6. About 22 expected events over the fleet's life.
+
+## Chapter 15
+2. *R*~0~ = 2.40 mΩ; 10-second resistance = 3.20 mΩ, roughly double the 25 °C values, consistent with the strong temperature dependence described in Chapter 4.
+4. Standard error ≈ 0.11 MΩ; *z* ≈ −19. The batch is certainly different from the fleet: quarantine and investigate that supplier lot, check for moisture ingress or material changes, and tighten the vehicle's isolation warning monitoring for affected cars.
