@@ -78,12 +78,25 @@ MAT = re.compile(r"\{\{mat\|([^{}]+?)\}\}")
 
 def _mat(m):
     rows = [r.split(",") for r in m.group(1).split(";")]
-    body = "".join("<tr>" + "".join(f"<td>{c.strip()}</td>" for c in r) + "</tr>" for r in rows)
-    return f'<span class="mtx"><table>{body}</table></span>'
+    body = "".join('<span class="mrow">' + "".join(f'<span class="mc">{c.strip()}</span>' for c in r) + "</span>" for r in rows)
+    return f'<span class="mtx">{body}</span>'
+
+
+EQBLOCK = re.compile(r"^::: eq\n(.*?)\n:::", re.S | re.M)
+
+
+def _eq_breaks(m):
+    lines = [l for l in m.group(1).split("\n")]
+    out = []
+    for i, l in enumerate(lines):
+        nxt = lines[i + 1] if i + 1 < len(lines) else ""
+        out.append(l + ("\\" if l.strip() and nxt.strip() else ""))
+    return "::: eq\n" + "\n".join(out) + "\n:::"
 
 
 def prep(md):
     """Expand the manuscript's small macros into inline HTML."""
+    md = EQBLOCK.sub(_eq_breaks, md)
     md = MAT.sub(_mat, md)
     return FRAC.sub(lambda m: f'<span class="frac"><span class="num">{m.group(1).strip()}</span><span class="den">{m.group(2).strip()}</span></span>', md)
 
