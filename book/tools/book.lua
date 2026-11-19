@@ -17,6 +17,10 @@ local boxes = {
 }
 
 function Header(el)
+  if is_latex and el.level == 2 and el.classes:includes('unnumbered') then
+    local t = inl_latex(el.content)
+    return {el, raw('\\markboth{' .. t .. '}{' .. t .. '}')}
+  end
   if el.level == 1 and el.classes:includes('part') then
     local title = pandoc.utils.stringify(el.content)
     if is_latex then

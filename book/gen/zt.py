@@ -34,7 +34,7 @@ def izt(X, causal=True):
                 body = f"\\left({tex(p)}\\right)^n" if p != 1 else ''
                 if causal:
                     pairs.append((A, body + ('u[n]' if False else '')))
-                    descs.append(f"$\\dfrac{{{tex(A)}z}}{{z - {par(p)}}} \\leftrightarrow {tex(A)}\\left({tex(p)}\\right)^n u[n]$ (right-sided).")
+                    descs.append(f"$\\dfrac{{{tex(A)}z}}{{z - {par(p)}}} \\leftrightarrow {tex(A)}" + (f"\\left({tex(p)}\\right)^n u[n]$ (right-sided)." if p != 1 else "u[n]$, a step."))
                     funcs.append(lambda m, A=A, p=p: A * p ** m if m >= 0 else 0)
                 else:
                     pairs.append((-A, body))

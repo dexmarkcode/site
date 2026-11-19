@@ -256,7 +256,142 @@ def ch6():
     fig.tight_layout(); save(fig, 'ch06_dft')
 
 
-ALL = [ch1, ch2, ch3, ch4, ch5, ch6]
+# =============================================================== Chapter 7
+def splane(ax, poles, shade=None, title=''):
+    ax.axhline(0, color=fs.INK, lw=0.6); ax.axvline(0, color=fs.INK, lw=0.6)
+    if shade:
+        lo, hi = shade
+        ax.axvspan(lo, hi, color=fs.TEAL, alpha=0.18, lw=0)
+    for p in poles:
+        ax.plot(p.real, p.imag, 'x', color=fs.RUST, ms=9, mew=2)
+    ax.set_xlim(-4, 4); ax.set_ylim(-3, 3); ax.set_title(title, loc='left', fontsize=8.5)
+    ax.set_xticks([]); ax.set_yticks([]); ax.grid(False)
+    ax.text(3.9, -0.4, r'$\sigma$', ha='right'); ax.text(0.15, 2.6, r'$j\omega$')
+
+
+def ch7():
+    fig, axs = plt.subplots(1, 3, figsize=(6.3, 2.0))
+    splane(axs[0], [-2, -1], (-1, 4), 'right-sided: Re $s > -1$')
+    splane(axs[1], [2, 3], (-4, 2), 'left-sided: Re $s < 2$')
+    splane(axs[2], [-2, 2], (-2, 2), 'two-sided: strip')
+    fig.tight_layout(); save(fig, 'ch07_roc')
+
+    fig, axs = plt.subplots(2, 3, figsize=(6.3, 3.4))
+    t = np.linspace(0, 6, 800)
+    cases = [(-1.0, 0, 'real, $\\sigma<0$'), (0.0, 0, 'at origin'), (0.35, 0, 'real, $\\sigma>0$'),
+             (-0.6, 4, 'complex, $\\sigma<0$'), (0.0, 4, 'imaginary axis'), (0.3, 4, 'complex, $\\sigma>0$')]
+    for ax, (sg, wv, ttl) in zip(axs.flat, cases):
+        y = np.exp(sg * t) * (np.cos(wv * t) if wv else 1)
+        ax.plot(t, y, color=fs.RUST if sg > 0 else (fs.GOLD if sg == 0 else fs.TEAL))
+        ax.set_title(ttl, loc='left', fontsize=8.5); ax.set_yticks([]); ax.set_xticks([])
+    fig.tight_layout(); save(fig, 'ch07_poles')
+
+
+# =============================================================== Chapter 8
+def ch8():
+    t = np.linspace(0, 8, 900)
+    fig, ax = plt.subplots(figsize=(5.8, 2.3))
+    for z_, c, lab in [(0.2, fs.RUST, 'underdamped ($\\zeta = 0.2$)'), (1.0, fs.NAVY, 'critically damped ($\\zeta = 1$)'), (2.0, fs.TEAL, 'overdamped ($\\zeta = 2$)')]:
+        wn = 1.5
+        num = [wn ** 2]; den = [1, 2 * z_ * wn, wn ** 2]
+        from scipy import signal
+        _, y = signal.step((num, den), T=t)
+        ax.plot(t, y, color=c, label=lab)
+    ax.axhline(1, color=fs.GREY, ls='--', lw=0.8)
+    ax.legend(loc='lower right'); ax.set_xlabel('$t$', loc='right'); ax.set_title('step responses of $\\omega_n^2/(s^2 + 2\\zeta\\omega_n s + \\omega_n^2)$', loc='left')
+    fig.tight_layout(); save(fig, 'ch08_damping')
+
+
+# =============================================================== Chapter 9
+def ch9():
+    from scipy import signal
+    w = np.logspace(-1, 4, 600)
+    num = [100, 100 * 5]; den = np.polymul([1, 50], [1, 500])
+    _, H = signal.freqs(num, den, worN=w)
+    fig, axs = plt.subplots(2, 1, figsize=(5.8, 3.4), sharex=True)
+    axs[0].semilogx(w, 20 * np.log10(abs(H)), color=fs.NAVY, label='exact')
+    asy = 20 * np.log10(100 * 5 / (50 * 500)) + np.where(w > 5, 20 * np.log10(w / 5), 0) - np.where(w > 50, 20 * np.log10(w / 50), 0) - np.where(w > 500, 20 * np.log10(w / 500), 0)
+    axs[0].semilogx(w, asy, color=fs.RUST, ls='--', lw=1.1, label='asymptotes')
+    axs[0].legend(loc='lower center'); axs[0].set_title('magnitude (dB)', loc='left')
+    axs[1].semilogx(w, np.degrees(np.angle(H)), color=fs.TEAL); axs[1].set_title('phase (degrees)', loc='left')
+    axs[1].set_xlabel('$\\omega$ (rad/s)', loc='right')
+    fig.tight_layout(); save(fig, 'ch09_bode')
+
+    fig, ax = plt.subplots(figsize=(5.8, 2.2))
+    t = np.linspace(0, 10, 900)
+    _, y = signal.step(([4], [1, 0.8, 4]), T=t)
+    ax.plot(t, y, color=fs.NAVY)
+    i = np.argmax(y)
+    ax.plot([t[i]], [y[i]], 'o', color=fs.RUST)
+    ax.annotate('peak: overshoot $M_p$ at $T_p$', (t[i], y[i]), xytext=(t[i] + 1.2, y[i] + 0.05), fontsize=8.5)
+    ax.axhspan(0.98, 1.02, color=fs.GOLD, alpha=0.3, lw=0); ax.text(7.2, 1.07, '2% band', fontsize=8.5)
+    ax.set_xlabel('$t$', loc='right'); ax.set_title('step response with $\\zeta = 0.2$, $\\omega_n = 2$', loc='left')
+    fig.tight_layout(); save(fig, 'ch09_specs')
+
+
+# =============================================================== Chapter 10
+def zplane(ax, poles, rin=None, rout=None, title=''):
+    R = 2.0
+    if rin is not None or rout is not None:
+        ax.add_patch(Circle((0, 0), rout if rout else R, color=fs.TEAL, alpha=0.18, lw=0))
+        if rin:
+            ax.add_patch(Circle((0, 0), rin, color='white', lw=0))
+    ax.add_patch(Circle((0, 0), 1, fill=False, ec=fs.GREY, ls='--', lw=0.9))
+    for p in poles:
+        ax.plot(p.real, p.imag, 'x', color=fs.RUST, ms=9, mew=2)
+    ax.axhline(0, color=fs.INK, lw=0.6); ax.axvline(0, color=fs.INK, lw=0.6)
+    ax.set_xlim(-1.9, 1.9); ax.set_ylim(-1.9, 1.9); ax.set_aspect('equal'); ax.set_xticks([]); ax.set_yticks([]); ax.grid(False)
+    ax.set_title(title, loc='left', fontsize=8.5)
+
+
+def ch10():
+    fig, axs = plt.subplots(1, 3, figsize=(6.3, 2.3))
+    zplane(axs[0], [0.5, -0.8], rin=0.8, title='right-sided: $|z| > 0.8$')
+    zplane(axs[1], [0.5, -0.8], rin=None, rout=0.5, title='left-sided: $|z| < 0.5$')
+    zplane(axs[2], [0.5, 1.5], rin=0.5, rout=1.5, title='two-sided: ring')
+    fig.tight_layout(); save(fig, 'ch10_roc')
+
+
+# =============================================================== Chapter 11
+def ch11():
+    fig, axs = plt.subplots(2, 3, figsize=(6.3, 3.4))
+    nn = np.arange(0, 16)
+    cases = [(0.8, 0, '$p = 0.8$'), (-0.8, 0, '$p = -0.8$'), (1.1, 0, '$p = 1.1$'),
+             (0.85, np.pi / 4, '$0.85e^{\\pm j\\pi/4}$'), (1.0, np.pi / 4, '$e^{\\pm j\\pi/4}$'), (1.08, np.pi / 4, '$1.08e^{\\pm j\\pi/4}$')]
+    for ax, (r, th, ttl) in zip(axs.flat, cases):
+        y = (r ** nn) * (np.cos(th * nn) if th else 1)
+        fs.stem(ax, nn, y, fs.RUST if r > 1 else (fs.GOLD if r == 1 else fs.TEAL))
+        ax.set_title(ttl, loc='left', fontsize=8.5); ax.set_yticks([]); ax.set_xticks([])
+    fig.tight_layout(); save(fig, 'ch11_modes')
+
+
+# =============================================================== Chapter 12
+def ch12():
+    w = np.linspace(0, np.pi, 800)
+    fig, axs = plt.subplots(1, 3, figsize=(6.3, 2.1), sharey=True)
+    H = np.abs(sum(np.exp(-1j * w * k) for k in range(5)) / 5)
+    axs[0].plot(w, H, color=fs.NAVY); axs[0].set_title('5-point average', loc='left', fontsize=8.5)
+    a = 0.9; H2 = np.abs((1 - a) / (1 - a * np.exp(-1j * w)))
+    axs[1].plot(w, H2, color=fs.TEAL); axs[1].set_title('first-order IIR, $\\alpha = 0.9$', loc='left', fontsize=8.5)
+    w0 = np.pi / 3; r = 0.95
+    num = 1 - 2 * np.cos(w0) * np.exp(-1j * w) + np.exp(-2j * w)
+    den = 1 - 2 * r * np.cos(w0) * np.exp(-1j * w) + r * r * np.exp(-2j * w)
+    H3 = np.abs(num / den); H3 /= H3[0]
+    axs[2].plot(w, H3, color=fs.RUST); axs[2].set_title('notch at $\\pi/3$, $r = 0.95$', loc='left', fontsize=8.5)
+    for ax in axs:
+        ax.set_xticks([0, np.pi / 2, np.pi]); ax.set_xticklabels(['0', '$\\pi/2$', '$\\pi$']); ax.set_xlabel('$\\omega$', loc='right')
+    fig.tight_layout(); save(fig, 'ch12_filters')
+
+    fig, ax = plt.subplots(figsize=(4.6, 2.4))
+    Om = np.linspace(0, 12, 500)
+    ax.plot(Om, 2 * np.arctan(Om / 2), color=fs.NAVY, label='bilinear: $\\omega = 2\\tan^{-1}(\\Omega T/2)$')
+    ax.plot(Om, np.minimum(Om, np.pi), color=fs.GREY, ls='--', label='linear $\\omega = \\Omega T$')
+    ax.axhline(np.pi, color=fs.RUST, lw=0.8); ax.text(0.2, np.pi + 0.1, '$\\omega = \\pi$', fontsize=8.5)
+    ax.set_xlabel('$\\Omega T$', loc='right'); ax.set_ylabel('$\\omega$'); ax.legend(loc='lower right'); ax.set_ylim(0, 3.8)
+    fig.tight_layout(); save(fig, 'ch12_warp')
+
+
+ALL = [ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8, ch9, ch10, ch11, ch12]
 
 if __name__ == '__main__':
     which = sys.argv[1:] or [f.__name__ for f in ALL]

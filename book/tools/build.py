@@ -35,6 +35,66 @@ def fig_md(fig, width='78%'):
     return f'\n![{cap}]({path}){{width={width}}}\n'
 
 
+FRAC = re.compile(r'(?<!\^\{)(?<!\^\{-)\\frac(?=\{)')
+
+
+INLINE = re.compile(r'(?<![$\\])\$(?!\$)([^$]+?)\$(?!\$)')
+
+
+def _promote(m):
+    body = m.group(1)
+    if len(body) > 55 and '\\frac' in body and '\\begin' not in body:
+        return '$$' + body + '$$'
+    return m.group(0)
+
+
+def _dfrac_outer(txt):
+    """Use \\dfrac only for fractions that are not nested in another fraction or an exponent."""
+    out, i, depth = [], 0, 0
+    fr = []          # stack of [arg_depth, groups_left, opened]
+    sup = []         # brace depths that belong to superscripts
+    n = len(txt)
+    while i < n:
+        if txt.startswith('\\frac', i) and not txt.startswith('\\fracc', i):
+            nested = any(f[2] for f in fr) or bool(sup)
+            out.append('\\frac' if nested else '\\dfrac')
+            fr.append([depth, 2, False])
+            i += 5
+            continue
+        if txt.startswith('\\dfrac', i):
+            nested = any(f[2] for f in fr) or bool(sup)
+            out.append('\\frac' if nested else '\\dfrac')
+            fr.append([depth, 2, False])
+            i += 6
+            continue
+        c = txt[i]
+        if c == '^' and i + 1 < n and txt[i + 1] == '{':
+            sup.append(depth)
+        if c == '{':
+            for f in fr:
+                if f[0] == depth and f[1] > 0 and not f[2]:
+                    f[2] = True
+            depth += 1
+        elif c == '}':
+            depth -= 1
+            if sup and sup[-1] == depth:
+                sup.pop()
+            for f in fr:
+                if f[2] and f[0] == depth:
+                    f[2] = False
+                    f[1] -= 1
+            fr = [f for f in fr if f[1] > 0]
+        out.append(c)
+        i += 1
+    return ''.join(out)
+
+
+def big(txt):
+    """Display-size outer fractions in maths; long inline formulas become displays."""
+    txt = INLINE.sub(_promote, txt)
+    return _dfrac_outer(txt)
+
+
 def problem_md(ch, i, p):
     out = [f'::: {{.problem num="{ch}.{i}" level="{LEVELS[p.level]}" topic="{p.topic}"}}', p.statement]
     if p.fig:
@@ -74,7 +134,7 @@ def chapter_md(ch):
              'cover the next step and ask yourself what you would do, then check.\n\n')
     for i, p in enumerate(probs, 1):
         text += solution_md(ch, i, p) + '\n'
-    return text, probs
+    return big(text), probs
 
 
 def assemble(chapters):
@@ -121,6 +181,10 @@ def build_pdf():
 def build_epub(front, body, back):
     def epubify(txt):
         return re.sub(r'```\{=latex\}.*?```', '', txt, flags=re.S)
+    counter = iter(range(1, 100))
+    body = re.sub(r'^## (?!.*unnumbered)(.+)$', lambda m: f'## Chapter {next(counter)}: {m.group(1)}', body, flags=re.M)
+    letters = iter('ABCDEFGH')
+    back = re.sub(r'^## (?!.*unnumbered)(.+)$', lambda m: f'## Appendix {next(letters)}: {m.group(1)}', back, flags=re.M)
     with open('build/epub.md', 'w') as f:
         f.write(epubify(front) + '\n\n' + body + '\n\n' + epubify(back))
     subprocess.run(['pandoc', 'build/epub.md', '-f', 'markdown+fenced_divs+bracketed_spans+tex_math_dollars+raw_attribute',

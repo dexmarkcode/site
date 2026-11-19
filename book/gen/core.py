@@ -179,7 +179,7 @@ def seq_tex(vals, start=0):
         parts[idx0] = r'\underset{\uparrow}{' + parts[idx0] + '}'
     else:
         parts[0] = r'\underset{\scriptscriptstyle n=' + str(start) + '}{' + parts[0] + '}'
-    return r'\{' + r',\ '.join(parts) + r'\}'
+    return r'\{' + r',\allowbreak\ '.join(parts) + r'\}'
 
 
 # ------------------------------------------------------------ problem object

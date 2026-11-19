@@ -56,15 +56,14 @@ def moving_avg(rng):
     st = f"For the {N}-point moving average $y[n] = \\tfrac{{1}}{{{N}}}\\sum_{{k=0}}^{{{N-1}}}x[n-k]$, find $H(z)$, its zeros, and $|H(e^{{j\\omega}})|$."
     zs = ', '.join(f"$e^{{\\pm j2\\pi\\cdot{k_}/{N}}}$" if 2 * k_ != N else '$-1$' for k_ in range(1, N // 2 + 1))
     steps = [('System function', f"$H(z) = \\dfrac{{1}}{{{N}}}\\sum_{{k=0}}^{{{N-1}}}z^{{-k}} = \\dfrac{{1}}{{{N}}}\\cdot\\dfrac{{1 - z^{{-{N}}}}}{{1 - z^{{-1}}}}$."),
-             ('Zeros', f"The numerator vanishes at the {N}th roots of unity; the root $z = 1$ cancels the denominator, leaving zeros at {zs}."),
+             ('Zeros', f"The numerator vanishes at the {N}{'rd' if N == 3 else 'th'} roots of unity; the root $z = 1$ cancels the denominator, leaving zeros at {zs}."),
              ('Magnitude', f"$|H(e^{{j\\omega}})| = \\dfrac{{1}}{{{N}}}\\left|\\dfrac{{\\sin({N}\\omega/2)}}{{\\sin(\\omega/2)}}\\right|$, a Dirichlet kernel: unity at DC, with nulls at $\\omega = 2\\pi k/{N}$."),
              ('Use', 'A simple low-pass smoother that completely removes components at those null frequencies, such as mains hum when the sample rate is chosen accordingly.')]
-    return Prob('A', st, steps, f"$H(z) = \\dfrac{{1 - z^{{-{N}}}}}{{{N}(1 - z^{{-1}})}}$; zeros at the non-unit {N}th roots of unity; $|H| = \\left|\\dfrac{{\\sin({N}\\omega/2)}}{{{N}\\sin(\\omega/2)}}\\right|$.", 'Moving average')
+    return Prob('A', st, steps, f"$H(z) = \\dfrac{{1 - z^{{-{N}}}}}{{{N}(1 - z^{{-1}})}}$; zeros at the non-unit {N}{'rd' if N == 3 else 'th'} roots of unity; $|H| = \\left|\\dfrac{{\\sin({N}\\omega/2)}}{{{N}\\sin(\\omega/2)}}\\right|$.", 'Moving average')
 
 
 def stab_triangle(rng):
-    a1 = rng.choice([-Q(3, 2), -1, -H_, H_, 1, Q(6, 5), -Q(9, 5), Q(1, 4)])
-    a2 = rng.choice([Q(1, 4), H_, Q(9, 10), -H_, Q(11, 10), Q(4, 5)])
+    a1, a2 = cyc(rng, 'tri', [(-1, H_), (H_, Q(1, 4)), (-Q(3, 2), Q(11, 10)), (-Q(6, 5), Q(1, 2)), (Q(1, 4), -H_), (Q(3, 2), H_), (-Q(9, 10), Q(4, 5))])
     stable = abs(a2) < 1 and abs(a1) < 1 + a2
     st = f"Is the causal system $y[n] {'+' if a1 >= 0 else '-'} {tex(abs(a1))}y[n-1] {'+' if a2 >= 0 else '-'} {tex(abs(a2))}y[n-2] = x[n]$ stable? Use the stability triangle, then confirm with the pole locations."
     rts = sp.roots(z ** 2 + a1 * z + a2)
@@ -182,13 +181,13 @@ def realisation(rng):
     H = (1 - z1 / z) / ((1 - p1 / z) * (1 - p2 / z))
     a = [1, -(p1 + p2), p1 * p2]
     b = [1, -z1]
-    st = f"Give the direct-form II and cascade realisations of $H(z) = \\dfrac{{{zpoly_tex(b)}}}{{({zpoly_tex([1, -p1])})({zpoly_tex([1, -p2])})}}$, and count delays and multipliers."
+    st = f"Give the direct-form II and cascade realisations of $$H(z) = \\dfrac{{{zpoly_tex(b)}}}{{({zpoly_tex([1, -p1])})({zpoly_tex([1, -p2])})}}$$ and count delays and multipliers."
     steps = [('Expand the denominator', f"$({zpoly_tex([1, -p1])})({zpoly_tex([1, -p2])}) = {zpoly_tex(a)}$."),
-             ('Direct form II', f"Use one internal state $w[n] = x[n] - ({tex(a[1])})w[n-1] - ({tex(a[2])})w[n-2]$, then $y[n] = w[n] {'-' if z1 > 0 else '+'} {tex(abs(z1))}w[n-1]$." if z1 else
+             ('Direct form II', f"Use one internal state $w[n] = x[n] - ({tex(a[1])})w[n-1] - ({tex(a[2])})w[n-2]$, then $y[n] = w[n] {'-' if z1 > 0 else '+'} {cf(abs(z1))}w[n-1]$." if z1 else
               f"Internal state $w[n] = x[n] - ({tex(a[1])})w[n-1] - ({tex(a[2])})w[n-2]$, and $y[n] = w[n]$."),
              ('Cascade form', f"Section 1: $H_1 = \\dfrac{{{zpoly_tex(b)}}}{{{zpoly_tex([1, -p1])}}}$; section 2: $H_2 = \\dfrac{{1}}{{{zpoly_tex([1, -p2])}}}$."),
              ('Cost', 'Direct form II needs only two delays (the minimum, so it is canonical). The cascade uses the same number of delays but keeps each pole in its own section, which is far less sensitive to coefficient rounding in fixed-point hardware.')]
-    return Prob('C', st, steps, f"DF-II: $w[n] = x[n] - ({tex(a[1])})w[n-1] - ({tex(a[2])})w[n-2]$, $y[n] = w[n] {'-' if z1 >= 0 else '+'} {tex(abs(z1))}w[n-1]$; cascade of two first-order sections.", 'Realisations')
+    return Prob('C', st, steps, f"DF-II: $w[n] = x[n] - ({tex(a[1])})w[n-1] - ({tex(a[2])})w[n-2]$, $y[n] = w[n]{(' - ' if z1 > 0 else ' + ') + cf(abs(z1)) + 'w[n-1]' if z1 else ''}$; cascade of two first-order sections.", 'Realisations')
 
 
 def ewma(rng):

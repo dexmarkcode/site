@@ -28,7 +28,7 @@ def by_inspection(rng):
     X = zpoly_tex(c)
     if sh:
         X = f"z\\left({X}\\right)"
-    st = f"Find the sequence whose Z-transform is $X(z) = {X}$, with ROC all $z$ except $0$" + (' and $\\infty$' if sh else '') + '.'
+    st = f"Find the sequence whose Z-transform is $$X(z) = {X},$$ with ROC all $z$ except $0$" + (' and $\\infty$' if sh else '') + '.'
     vals = c
     start = -sh
     steps = [('Read off the coefficients', 'For a polynomial in $z^{-1}$ the coefficient of $z^{-n}$ is simply $x[n]$; no partial fractions are needed.')]
@@ -112,7 +112,7 @@ def long_div(rng):
     den = sp.expand((z - a) * (z - b))
     steps = [('Write in powers of $z^{-1}$', f"Divide numerator and denominator by $z^2$: $X = \\dfrac{{{zpoly_tex(sp.Poly(sp.expand(sp.fraction(sp.together(X))[0]), z).all_coeffs())}}}{{{zpoly_tex(sp.Poly(den, z).all_coeffs())}}}$ (after dividing through)."),
              ('Divide', 'Divide as with ordinary polynomials, but in ascending powers of $z^{-1}$, so that the quotient is $x[0] + x[1]z^{-1} + x[2]z^{-2} + \\cdots$.'),
-             ('Equivalently, recurse', f"The denominator corresponds to $x[n] = {tex(a+b)}x[n-1] - ({tex(a*b)})x[n-2] + (\\text{{numerator terms}})$, which generates the same numbers."),
+             ('Equivalently, recurse', f"The denominator corresponds to the recursion $x[n] = {combo([(a + b, 'x[n-1]'), (-a*b, 'x[n-2]')])} + (\\text{{input terms from the numerator}})$, which generates the same numbers."),
              ('Samples', ', '.join(f"$x[{m}] = {tex(v)}$" for m, v in enumerate(vals)) + '.')]
     return Prob('B', st, steps, ', '.join(f"$x[{m}] = {tex(v)}$" for m, v in enumerate(vals)) + '.', 'Long division')
 

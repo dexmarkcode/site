@@ -185,6 +185,9 @@ def second_order(rng):
     steps += [(f'Invert term {i+1}', d) for i, d in enumerate(r['descs'])]
     f0 = sp.nsimplify(r['f'].subs(tp, 0))
     fd0 = sp.nsimplify(sp.diff(r['f'], tp).subs(tp, 0))
+    assert f0 == y0, (f0, y0)
+    if not (inp == 'zero' and False):
+        pass
     steps.append(('Check the initial conditions', f"$y(0) = {tex(f0)}$ and $y'(0) = {tex(fd0)}$, as required."))
     return Prob('C', st, steps, f"$y(t) = {combo(r['pairs'])}$ for $t \\ge 0$.", 'Second-order equations')
 

@@ -45,7 +45,7 @@ def h_from_ode(rng):
     a1, a0 = p1 + p2, p1 * p2
     z = rng.choice([0, 1, 3, 6])
     b1, b0 = (1, z) if z else (0, rng.choice([2, 4, 10]))
-    rhs = (f"\\dfrac{{dx}}{{dt}} + {z}x" if z else f"{b0}x")
+    rhs = (f"\\dfrac{{dx}}{{dt}} + {cf(z)}x" if z else f"{b0}x")
     H = (b1 * s + b0) / (s ** 2 + a1 * s + a0)
     st = f"A system is described by $\\dfrac{{d^2y}}{{dt^2}} {'+' if a1 >= 0 else '-'} {abs(a1)}\\dfrac{{dy}}{{dt}} {'+' if a0 >= 0 else '-'} {abs(a0)}y = {rhs}$. Find $H(s)$, its poles and zeros, and decide whether the (causal) system is stable."
     stable = p1 > 0 and p2 > 0
