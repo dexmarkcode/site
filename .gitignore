@@ -1,0 +1,5 @@
+__pycache__/
+fe-exam-book/figures/q/
+fe-exam-book/build/
+*.aux
+*.log
