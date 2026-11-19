@@ -98,3 +98,12 @@
 6. About 37.5 days.
 7. 15.9 A per phase for 11 kW three-phase; 32.2 A for 7.4 kW single-phase.
 8. About 0.61 mF.
+
+## Chapter 13
+1. 7.4 kW on the single-phase wallbox (limited by the supply); 11 kW on the 22 kW post (limited by the car's OBC).
+2. 6 A, 24 A and 32 A; about 33 % duty for 20 A.
+3. State B: vehicle connected but not requesting charge, and the station is not yet offering current. Check authorisation, charging schedules in the car and station, and whether the station is waiting for the car or vice versa.
+4. 144 kW at 360 V; 260 kW at 650 V; 320 kW at 800 V (current-limited in every case).
+5. Plug-in and wake-up, communication set-up (SLAC), authorisation, parameter exchange, cable check, pre-charge, energy transfer, shutdown. The vehicle controls current through its requests.
+6. Power would allow about 13 cars at once, but only 8 dispensers exist, so about 8 × 60/25 ≈ 19 sessions per hour.
+7. About 7 450 kWh from the grid, an average of 1.24 MW over 6 hours: slightly above the 1.2 MW limit, so either the window must be extended, charging must begin earlier, or a little on-site storage is needed.
