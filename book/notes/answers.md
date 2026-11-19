@@ -24,3 +24,19 @@
 7. 354 A RMS; total copper loss 4.5 kW.
 8. D ≈ 0.037 (3.7 %). Such a small duty cycle gives poor efficiency and control resolution, and the low-voltage network must be galvanically isolated from the floating HV system; a transformer-isolated converter solves both.
 9. Yes: the minimum is 40 kΩ at 400 V. At 850 V the minimum is 85 kΩ.
+
+## Chapter 4
+1. 18 Wh per cell; about 257 Wh/kg; roughly 4 170 cells for 75 kWh.
+3. Each cell stores 0.448 kWh, so about 134 cells: 134s1p, 429 V nominal, 60.0 kWh. About 3 330 of the 21700 cells would be needed for the same energy.
+4. Effective resistance ≈ 4.54 mΩ; maximum current ≈ 194 A.
+5. 3.50 V immediately; about 3.44 V at 15 s; 3.41 V in the limit.
+7. About 2.5 times faster at 35 °C; about 0.26 times (roughly a quarter) at 0 °C.
+8. About 72 % state of health. At 35 °C calendar fade rises by a factor of about 1.9, giving roughly 54 %, which would breach a typical 70 % warranty threshold.
+
+## Chapter 5
+1. 165.6 A (24.7 W), 149.0 A (22.2 W), 135.5 A (20.2 W).
+2. 7 Ah × 400 V ≈ 2.8 kWh.
+3. Cell mass 309 kg. Module design: 57 % of mass is cells, 150 Wh/kg. Cell-to-pack: 72 %, 191 Wh/kg.
+5. 0.643 kg/s, about 36 L/min.
+6. 39.2 °C. The internal resistance (0.10 K/W) is largest but set by the cell; the interface material (0.08 K/W) is usually the first one the pack designer can improve.
+7. About 3.65 kWh (13.1 MJ); roughly 44 minutes at 5 kW.
