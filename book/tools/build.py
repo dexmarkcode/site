@@ -38,13 +38,13 @@ def fig_md(fig, width='78%'):
 FRAC = re.compile(r'(?<!\^\{)(?<!\^\{-)\\frac(?=\{)')
 
 
-INLINE = re.compile(r'(?<![$\\])\$(?!\$)([^$]+?)\$(?!\$)')
+INLINE = re.compile(r'(?<![$\\])\$(?!\$)([^$]+?)\$(?!\$)([.,;:]?)')
 
 
 def _promote(m):
     body = m.group(1)
     if len(body) > 55 and '\\frac' in body and '\\begin' not in body:
-        return '$$' + body + '$$'
+        return '$$' + body + m.group(2) + '$$'
     return m.group(0)
 
 

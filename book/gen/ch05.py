@@ -40,7 +40,7 @@ def basic_pairs(rng):
         st = f"Find the Fourier transform of $x(t) = {cf(A)}\\delta(t - {t0}) + \\delta(t + {t0})$ and write it in real form if possible."
         steps = [('Sifting', f"$\\int\\delta(t - t_0)e^{{-j\\omega t}}dt = e^{{-j\\omega t_0}}$."),
                  ('Apply', f"$X = {cf(A)}e^{{-j{cf(t0)}\\omega}} + e^{{j{cf(t0)}\\omega}}$."),
-                 ('Real form', (f"With equal weights this is $2\\cos({cf(t0)}\\omega)$." if A == 1 else f"$X = ({A}+1)\\cos({t0}\\omega) - j({A}-1)\\sin({t0}\\omega)$. Unequal weights break the symmetry, so the transform is complex."))]
+                 ('Real form', (f"With equal weights this is $2\\cos({cf(t0)}\\omega)$." if A == 1 else f"$X = {A+1}\\cos({cf(t0)}\\omega) - {cf(A-1)}j\\sin({cf(t0)}\\omega)$. Unequal weights break the symmetry, so the transform is complex."))]
         ans = f"$X(j\\omega) = {cf(A)}e^{{-j{cf(t0)}\\omega}} + e^{{j{cf(t0)}\\omega}}$" + ('$ = 2\\cos(' + str(t0) + '\\omega)$.' if A == 1 else '.')
         if A == 1:
             ans = f"$X(j\\omega) = 2\\cos({cf(t0)}\\omega)$."

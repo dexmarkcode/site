@@ -61,8 +61,35 @@ function Figure(el)
   return nil
 end
 
+local function label(txt, cls)
+  return pandoc.Para({pandoc.Span({pandoc.Strong({pandoc.Str(txt)})}, {class = cls})})
+end
+
+local function epub_div(el)
+  local c = el.classes
+  if c:includes('problem') then
+    el.content:insert(1, label('Problem ' .. (el.attributes.num or '') .. ' · ' .. (el.attributes.level or ''), 'box-label'))
+    return el
+  end
+  if c:includes('solution') then
+    el.content:insert(1, label('Solution ' .. (el.attributes.num or ''), 'sol-label'))
+    return el
+  end
+  if c:includes('answer') then
+    el.content:insert(1, label('ANSWER', 'small-label'))
+    return el
+  end
+  for cls, lab in pairs(boxes) do
+    if c:includes(cls) then
+      el.content:insert(1, label(string.upper(el.attributes.title or lab), 'small-label'))
+      return el
+    end
+  end
+  return nil
+end
+
 function Div(el)
-  if not is_latex then return nil end
+  if not is_latex then return epub_div(el) end
   local c = el.classes
   if c:includes('partintro') then
     return pandoc.List({raw('\\begin{partintro}')}) .. el.content .. pandoc.List({raw('\\end{partintro}')})
