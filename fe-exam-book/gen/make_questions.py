@@ -105,12 +105,11 @@ def build(name, plan, prefix, grouped=False, shuffle=False, sections=False):
 
 def answer_key(qs, name, prefix=""):
     rows = []
-    per = (len(qs) + 2) // 3
-    cols = [qs[i * per:(i + 1) * per] for i in range(3)]
-    hdr = "| Q | Ans | Knowledge area | Q | Ans | Knowledge area | Q | Ans | Knowledge area |\n|:-:|:-:|:--|:-:|:-:|:--|:-:|:-:|:--|\n"
+    per = (len(qs) + 1) // 2
+    hdr = "| Q | Ans | Knowledge area | Q | Ans | Knowledge area |\n|:-:|:-:|:--------|:-:|:-:|:--------|\n"
     for r in range(per):
         cells = []
-        for c in range(3):
+        for c in range(2):
             idx = c * per + r
             if idx < len(qs):
                 q = qs[idx]

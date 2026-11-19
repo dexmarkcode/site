@@ -79,7 +79,7 @@ def dielectric_cap(rng):
     stem = (f"A parallel-plate capacitor has plates of area {Acm2} cm² separated by {fnum(dmm)} mm of {name} ($\\varepsilon_r = {fnum(er)}$). "
             "Neglecting fringing, what is its capacitance?")
     sol = (f"$$C = {frac('\\varepsilon_0\\varepsilon_r A','d')} = {frac(f'(8.854\\times10^{{-12}})({fnum(er)})({mnum(Acm2*1e-4)})', mnum(dmm*1e-3))} = {em(C,'F')}$$\n\n"
-           "Convert cm² to m² (×10⁻⁴) and mm to m (×10⁻³) before substituting.")
+           "Convert cm² to m² ($\\times10^{-4}$) and mm to m ($\\times10^{-3}$) before substituting.")
     wr = [C / er, C * 10, C / 10, C * 100]
     return make(stem, num_mcq(rng, C, wr, lambda v: eng(v, "F")), sol)
 

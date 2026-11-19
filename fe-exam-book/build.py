@@ -29,7 +29,7 @@ def assemble():
     text = re.sub(r"\{\{(QUESTIONS|ANSWERS|KEY|SHEET):(\w+)\}\}", sub, text)
     out = os.path.join(B, "book.md")
     open(out, "w", encoding="utf-8").write(text)
-    words = len(re.findall(r"[A-Za-z’']+", re.sub(r"\$[^$]*\$", " ", text)))
+    words = len(text.split())
     print(f"assembled book.md: ~{words:,} words")
     return out
 

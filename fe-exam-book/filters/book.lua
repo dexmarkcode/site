@@ -149,7 +149,14 @@ function Pandoc(doc)
   return doc
 end
 
+function Math(el)
+  if is_latex and el.mathtype == "DisplayMath" then
+    return pandoc.RawInline("latex", "\\[\\adjustbox{max width=\\linewidth}{$\\displaystyle " .. el.text .. "$}\\]")
+  end
+end
+
 return {
+  { Math = Math },
   { Span = Span },
   { Div = Div },
   { Pandoc = Pandoc },

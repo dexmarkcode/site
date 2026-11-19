@@ -1106,6 +1106,43 @@ def _():
     save(f, "fig15_vmodel")
 
 
+# ------------------------------------------------------------------ Chapter 16
+@fig("fig16_time_budget")
+def _():
+    parts = [("Quick wins\n~22 questions × 1.5 min", 33, TEAL), ("Standard problems\n~25 questions × 3.5 min", 87, INK),
+             ("Long problems\n~8 questions × 3 min (first pass)", 25, COPPER), ("Reserve for flags\nand checks", 15, RED)]
+    f, ax = plt.subplots(figsize=(6.6, 2.3))
+    left = 0
+    for lab, w, c in parts:
+        ax.barh(0, w, left=left, color=c, height=0.55, alpha=0.92)
+        ax.text(left + w / 2, 0, f"{w} min", ha="center", va="center", color="white", fontsize=10, fontweight="bold")
+        ax.text(left + w / 2, -0.55, lab, ha="center", va="top", fontsize=8.5, color="#333")
+        left += w
+    ax.set_xlim(0, 160); ax.set_ylim(-1.4, 0.6); ax.set_yticks([])
+    ax.set_xticks(range(0, 161, 20)); ax.set_xlabel("Minutes into a 160-minute section")
+    ax.grid(axis="y", visible=False); ax.spines["left"].set_visible(False)
+    save(f, "fig16_time_budget")
+
+
+@fig("fig16_triage")
+def _():
+    f, ax = blank(6.8, 4.2)
+    ax.set_xlim(0, 14); ax.set_ylim(0, 9)
+    box(ax, 4.5, 7.7, 5, 0.9, "Read the question (last sentence first)", fc=LIGHT, fs=10)
+    arrow(ax, (7, 7.7), (7, 7.05))
+    ax.add_patch(Polygon([(7, 7.0), (9.4, 6.1), (7, 5.2), (4.6, 6.1)], fc="white", ec=INK, lw=1.3))
+    ax.text(7, 6.1, "Route clear and\nunder ~4 minutes?", ha="center", va="center", fontsize=9.5)
+    arrow(ax, (4.6, 6.1), (2.9, 6.1)); ax.text(3.75, 6.3, "Yes", fontsize=9.5, color=TEAL)
+    box(ax, 0.3, 5.5, 2.6, 1.2, "Solve now,\ncheck, answer", fc=TEAL, ec=TEAL, tc="white", fs=9.5)
+    arrow(ax, (9.4, 6.1), (11.1, 6.1)); ax.text(9.9, 6.3, "No", fontsize=9.5, color=RED)
+    box(ax, 11.1, 5.5, 2.6, 1.2, "Best guess,\nFLAG, move on", fc=RED, ec=RED, tc="white", fs=9.5)
+    box(ax, 0.3, 3.0, 13.4, 1.0, "Pass 2: return to flagged questions with the time you have banked", fc=COPPER, ec=COPPER, tc="white", fs=10)
+    arrow(ax, (1.6, 5.5), (1.6, 4.05)); arrow(ax, (12.4, 5.5), (12.4, 4.05))
+    box(ax, 0.3, 1.2, 13.4, 1.0, "Pass 3: check units, signs and magnitudes; confirm every question has an answer", fc=INK, ec=INK, tc="white", fs=10)
+    arrow(ax, (7, 3.0), (7, 2.25))
+    save(f, "fig16_triage")
+
+
 if __name__ == "__main__":
     names = sys.argv[1:] or list(FIGS)
     for n in names:
