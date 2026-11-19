@@ -1,0 +1,21 @@
+title:
+  - type: main
+    text: Signals and Systems Workbook
+  - type: subtitle
+    text: "600 Practice Problems on Fourier, Laplace, and Z-Transform With Step-by-Step Solutions"
+creator:
+  - role: author
+    text: Marcus J. Thornton Ph.D
+lang: en-GB
+rights: "Copyright © 2026 Marcus J. Thornton. All rights reserved."
+date: 2026
+subject:
+  - Signals and systems
+  - Fourier analysis
+  - Laplace transform
+  - Z-transform
+  - Electrical engineering
+description: >
+  Six hundred graded problems with complete step-by-step solutions covering signals, systems, convolution,
+  Fourier series and transforms, sampling, the Laplace transform and the Z-transform, written for
+  university students and practising engineers.
