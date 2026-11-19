@@ -27,8 +27,10 @@
   @bottom-right { content: counter(page); font-family: "EBG"; font-size: 9.5pt; color: #555; }
 }
 @page :blank { @top-left { content: none; } @top-right { content: none; } @bottom-left { content: none; } @bottom-right { content: none; } }
-@page front { @top-left { content: none; } @top-right { content: none; }
-  @bottom-left { content: counter(page, lower-roman); } @bottom-right { content: counter(page, lower-roman); } }
+@page front { @top-left { content: none; } @top-right { content: none; } }
+@page front:left { @bottom-left { content: counter(page, lower-roman); } }
+@page front:right { @bottom-right { content: counter(page, lower-roman); } }
+@page mainstart { counter-reset: page 1; @top-left { content: none; } @top-right { content: none; } @bottom-left { content: none; } @bottom-right { content: none; } }
 @page bare { margin: 0; @top-left { content: none; } @top-right { content: none; } @bottom-left { content: none; } @bottom-right { content: none; } }
 @page opener { @top-left { content: none; } @top-right { content: none; } }
 @page opener:left { @bottom-left { content: none; } }
@@ -63,7 +65,8 @@ b, strong { font-weight: 600; }
 .toc a { color: inherit; text-decoration: none; }
 .toc a::after { content: leader(dotted) target-counter(attr(href), page); }
 .toc-front a::after { content: leader(dotted) target-counter(attr(href), page, lower-roman); }
-.toc li.toc-front:nth-last-child(-n+4) a::after { content: leader(dotted) target-counter(attr(href), page); }
+.toc-back { font-size: 11pt; margin: 0.15em 0 !important; font-style: italic; }
+.toc-back:first-of-type { margin-top: 0.9em !important; }
 .toc-part { margin-top: 0.9em !important; font-family: "Corm"; font-weight: 700; font-size: 13pt; color: var(--navy); letter-spacing: 0.02em; }
 .toc-ch { padding-left: 1.6em; font-size: 11pt; margin: 0.15em 0 !important; }
 .toc-ch .tn { display: inline-block; width: 1.6em; color: var(--copper); font-variant-numeric: lining-nums; }
@@ -79,7 +82,7 @@ b, strong { font-weight: 600; }
 
 /* ---------- parts ---------- */
 .part { page: opener; break-before: right; break-after: page; text-align: left; padding-top: 1.3in; }
-.first-main { counter-reset: page 1; }
+.first-main { page: mainstart; }
 .part-num { font-family: "Corm"; font-size: 15pt; letter-spacing: 0.35em; text-transform: uppercase; color: var(--copper); margin: 0; }
 .part-title { font-family: "Corm"; font-weight: 600; font-size: 34pt; line-height: 1.05; color: var(--navy); margin: 0.15in 0 0; }
 .part-rule { width: 100%; height: 1.5px; background: var(--navy); margin: 0.3in 0; }

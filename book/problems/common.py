@@ -10,9 +10,15 @@ def build(chapter, plan, seed):
     """plan: list of (template_fn, count). Each fn(r, tag) -> Problem."""
     r = rng(seed)
     out = []
+    seen = set()
     for fn, count in plan:
         for i in range(count):
-            p = fn(r, f"c{chapter:02d}_{fn.__name__}_{i}")
+            for _ in range(60):  # avoid printing the same question twice
+                p = fn(r, f"c{chapter:02d}_{fn.__name__}_{i}")
+                key = (p.text, p.answer)
+                if key not in seen:
+                    break
+            seen.add(key)
             out.append(p)
     # stable order by level, keeping template grouping within a level
     out.sort(key=lambda p: p.level)

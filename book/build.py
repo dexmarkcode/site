@@ -202,7 +202,7 @@ def toc_html(front_titles, back_titles):
             rows.append(f'<li class="toc-ch"><a href="#ch{c}"><span class="tn">{c}</span>{CHAPTERS[c]}</a></li>')
     for t in back_titles:
         sid = re.sub(r"\W+", "-", t.lower()).strip("-")
-        rows.append(f'<li class="toc-front"><a href="#{sid}">{t}</a></li>')
+        rows.append(f'<li class="toc-back"><a href="#{sid}">{t}</a></li>')
     return f'<section class="toc" id="contents"><h1 class="front-title">Contents</h1><ul>{"".join(rows)}</ul></section>'
 
 
@@ -228,7 +228,13 @@ def build_pdf():
     body.extend(front_html())
     total = 0
     first = True
+    only = os.environ.get("ONLY")
+    only = {int(x) for x in only.split(",")} if only else None
     for num, title, chs, intro in PARTS:
+        if only:
+            chs = [c for c in chs if c in only]
+            if not chs:
+                continue
         p = part_html(num, title, intro, chs)
         if first:
             p = p.replace('class="part"', 'class="part first-main"', 1)
@@ -245,8 +251,10 @@ def build_pdf():
         f.write(doc)
     print(f"total problems: {total}")
     from weasyprint import CSS
+    from weasyprint.text.fonts import FontConfiguration
+    fc = FontConfiguration()
     pdf = os.path.join(OUT, "Electric_Circuits_Workbook_Marcus_J_Thornton.pdf")
-    HTML(string=doc, base_url=HERE).write_pdf(pdf, stylesheets=[CSS(string=css)])
+    HTML(string=doc, base_url=HERE).write_pdf(pdf, stylesheets=[CSS(string=css, font_config=fc)], font_config=fc)
     print("PDF:", pdf)
     return pdf
 
@@ -264,7 +272,9 @@ def build_cover():
 <div class="bottom"><p class="feat">DC · Kirchhoff · Nodal &amp; Mesh · Thévenin &amp; Norton · Transients · RLC · Phasors · AC Power · Three-Phase</p>
 <p class="auth">MARCUS J. THORNTON, PhD</p></div></div></body></html>'''
     pdf = os.path.join(BUILD, "cover.pdf")
-    HTML(string=doc).write_pdf(pdf, stylesheets=[CSS(string=css)])
+    from weasyprint.text.fonts import FontConfiguration
+    fc = FontConfiguration()
+    HTML(string=doc).write_pdf(pdf, stylesheets=[CSS(string=css, font_config=fc)], font_config=fc)
     subprocess.run(["pdftoppm", "-png", "-r", "228", "-singlefile", pdf, os.path.join(BUILD, "cover")], check=True)
     return os.path.join(BUILD, "cover.png")
 
@@ -276,19 +286,19 @@ def cover_art():
     lines = []
     for k in range(26):
         x = r.choice(range(40, 680, 40))
-        y = r.choice(range(520, 1000, 40))
+        y = r.choice(range(600, 860, 40))
         path = f"M{x},{y}"
         for _ in range(r.randint(2, 5)):
             if r.random() < 0.5:
-                x += r.choice([-120, -80, 80, 120, 160])
+                x = min(700, max(20, x + r.choice([-120, -80, 80, 120, 160])))
             else:
-                y += r.choice([-80, -40, 40, 80])
+                y = min(860, max(580, y + r.choice([-80, -40, 40, 80])))
             path += f" L{x},{y}"
         lines.append(f'<path d="{path}" stroke="#B5651D" stroke-opacity="{r.uniform(0.25, 0.7):.2f}" stroke-width="3" fill="none"/>'
                      f'<circle cx="{x}" cy="{y}" r="7" fill="#0F2238" stroke="#D49A5E" stroke-width="3"/>')
     # a stylised resistor and capacitor
-    lines.append('<path d="M60,760 L200,760 l15,-25 l30,50 l30,-50 l30,50 l30,-50 l30,50 l15,-25 L560,760" stroke="#E8C9A0" stroke-width="5" fill="none"/>')
-    lines.append('<path d="M560,700 L560,820 M590,700 L590,820 M590,760 L700,760" stroke="#E8C9A0" stroke-width="5" fill="none"/>')
+    lines.append('<path d="M60,720 L200,720 l15,-25 l30,50 l30,-50 l30,50 l30,-50 l30,50 l15,-25 L560,720" stroke="#E8C9A0" stroke-width="5" fill="none"/>')
+    lines.append('<path d="M560,660 L560,780 M590,660 L590,780 M590,720 L700,720" stroke="#E8C9A0" stroke-width="5" fill="none"/>')
     return f'<svg class="art" viewBox="0 0 720 1080" xmlns="http://www.w3.org/2000/svg">{"".join(lines)}</svg>'
 
 
@@ -365,4 +375,5 @@ if __name__ == "__main__":
     figs_text.build_all()
     build_cover()
     build_pdf()
-    build_epub()
+    if not os.environ.get("ONLY"):
+        build_epub()
