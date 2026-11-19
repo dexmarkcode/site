@@ -107,3 +107,9 @@
 5. Plug-in and wake-up, communication set-up (SLAC), authorisation, parameter exchange, cable check, pre-charge, energy transfer, shutdown. The vehicle controls current through its requests.
 6. Power would allow about 13 cars at once, but only 8 dispensers exist, so about 8 × 60/25 ≈ 19 sessions per hour.
 7. About 7 450 kWh from the grid, an average of 1.24 MW over 6 hours: slightly above the 1.2 MW limit, so either the window must be extended, charging must begin earlier, or a little on-site storage is needed.
+
+## Chapter 14
+1. At 40 km/h: 335 km with PTC, 384 km with the heat pump (+15 %). At 110 km/h: 400 km and 424 km (+6 %).
+4. A typical classification: S3 (head-on collision possible), E2–E3 (overtaking on two-lane roads is occasional to frequent), C2–C3. With E3 and C2 the sum is 8: ASIL B; arguments for C3 would give ASIL C. Document the reasoning.
+5. Total reaction time 90 ms, well within the 2.5 s FTTI; about 2.41 s of margin.
+6. About 22 expected events over the fleet's life.
