@@ -14,6 +14,10 @@
 % ---------- layout helpers
 \usepackage{needspace}
 \usepackage{adjustbox}
+\newsavebox{\fitmathbox}
+\newcommand{\fitmath}[1]{\par\vspace{0.4\baselineskip}\sbox{\fitmathbox}{$\displaystyle #1$}%
+  {\centering\ifdim\wd\fitmathbox>\linewidth\resizebox{\linewidth}{!}{\usebox{\fitmathbox}}\else\usebox{\fitmathbox}\fi\par}%
+  \vspace{0.4\baselineskip}\noindent\ignorespaces}
 \usepackage{float}
 \floatplacement{figure}{H}
 \usepackage{eso-pic}

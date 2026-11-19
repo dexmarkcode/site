@@ -151,7 +151,7 @@ end
 
 function Math(el)
   if is_latex and el.mathtype == "DisplayMath" then
-    return pandoc.RawInline("latex", "\\[\\adjustbox{max width=\\linewidth}{$\\displaystyle " .. el.text .. "$}\\]")
+    return pandoc.RawInline("latex", "\\fitmath{" .. el.text .. "}")
   end
 end
 
