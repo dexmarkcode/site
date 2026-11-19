@@ -1099,7 +1099,7 @@ def _():
         box(ax, xl, y, 3.0, 0.75, l, fc=LIGHT, ec=INK, fs=9.5)
         box(ax, xr, y, 3.0, 0.75, r, fc=LIGHT, ec=COPPER, fs=9.5)
         ax.annotate("", xy=(xr, y + 0.37), xytext=(xl + 3.0, y + 0.37), arrowprops=dict(arrowstyle="<->", color=GREY, ls="--", lw=0.9))
-    box(ax, 5.1, 0, 3.6, 0.75, "Implementation (coding)", fc=INK, ec=INK, fs=9.5, tc="white")
+    box(ax, 4.6, 0, 4.8, 0.75, "Implementation (coding)", fc=INK, ec=INK, fs=9.5, tc="white")
     ax.text(1.0, 0.3, "Verification and design", fontsize=9, color=INK, style="italic")
     ax.text(13.6, 0.3, "Testing", fontsize=9, color=COPPER, style="italic", ha="right")
     ax.set_xlim(0, 14); ax.set_ylim(-0.3, 5.0)

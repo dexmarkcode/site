@@ -60,11 +60,16 @@ POOLS = {t: Pool(t) for t in NAMES}
 LET = "ABCD"
 
 
-def render(qs, prefix, title_q=None, grouped=False):
+def render(qs, prefix, title_q=None, grouped=False, sections=False):
     qmd, amd = [], []
     last = None
     for i, q in enumerate(qs, 1):
         num = f"{prefix}{i}"
+        if sections and i in (1, 56):
+            label = 'Section 1: Questions 1–55' if i == 1 else 'Section 2: Questions 56–110'
+            qmd.append(f"\n## {label} {{.unnumbered}}\n")
+            if i == 56:
+                qmd.insert(len(qmd) - 1, '\n::: {.tip title="Scheduled Break"}\nYou have reached the end of Section 1. On the real exam you would now submit this section and could not return to it. Take a break of up to 25 minutes, then continue.\n:::\n')
         if grouped and q.topic != last:
             qmd.append(f"\n### {NAMES[q.topic]} {{.unnumbered .qgroup}}\n")
             last = q.topic
@@ -85,14 +90,14 @@ def render(qs, prefix, title_q=None, grouped=False):
     return "\n".join(qmd), "\n".join(amd)
 
 
-def build(name, plan, prefix, grouped=False, shuffle=False):
+def build(name, plan, prefix, grouped=False, shuffle=False, sections=False):
     qs = []
     for topic, n in plan:
         for _ in range(n):
             qs.append(POOLS[topic].draw())
     if shuffle:
         MASTER.shuffle(qs)
-    qtext, atext = render(qs, prefix, grouped=grouped)
+    qtext, atext = render(qs, prefix, grouped=grouped, sections=sections)
     open(os.path.join(OUT, f"{name}_q.md"), "w").write(qtext)
     open(os.path.join(OUT, f"{name}_a.md"), "w").write(atext)
     return qs
@@ -159,7 +164,7 @@ if __name__ == "__main__":
     qs = build("ch16", DRILL, "16.", shuffle=False)
     total += len(qs)
     for m in (1, 2):
-        qs = build(f"mock{m}", MOCK, "", shuffle=False)
+        qs = build(f"mock{m}", MOCK, "", shuffle=False, sections=True)
         answer_key(qs, f"mock{m}")
         total += len(qs)
         stats[f"mock{m}"] = Counter(LET[q.answer] for q in qs)
