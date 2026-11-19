@@ -170,7 +170,7 @@ def num_mcq(rng, correct, wrongs, fmt, integer=False, positive=True):
         fill_b = [correct - s for s in steps]
         fill_a = [correct + s for s in steps]
     else:
-        a = abs(correct)
+        a = abs(correct) or 1.0
         fill_b = [correct - a * f for f in (0.25, 0.4, 0.5, 0.6, 0.15, 0.7)]
         fill_a = [correct + a * f for f in (0.33, 0.5, 1.0, 0.2, 1.5, 2.0)]
     bi = ai = 0
@@ -187,7 +187,10 @@ def num_mcq(rng, correct, wrongs, fmt, integer=False, positive=True):
         chosen.append((w, s))
         nb_have += 1
     while len(chosen) < 3:
-        w = fill_a[ai % len(fill_a)] * (1 + 0.37 * (ai // len(fill_a)))
+        if ai > 60:
+            raise ValueError("cannot build distinct options")
+        base_a = abs(correct) or 1.0
+        w = correct + base_a * (0.33 + 0.29 * ai) if not integer else correct + 1 + ai
         ai += 1
         s = fmt(w)
         if s in seen:
@@ -206,7 +209,8 @@ def str_mcq(rng, correct, wrongs):
         if w not in opts:
             opts.append(w)
     opts = opts[:4]
-    assert len(opts) == 4, (correct, wrongs)
+    if len(opts) != 4:
+        raise ValueError("not enough distinct options")
     rng.shuffle(opts)
     return opts, opts.index(correct)
 
