@@ -63,7 +63,7 @@ save_drawing(d, "ch03_cable")
 
 # 3.5 Battery with internal resistance
 d = drawing()
-d += (bat := elm.BatteryCell().up().label("E", loc="top"))
+d += (bat := elm.BatteryCell().up().reverse().label("E", loc="top"))
 d += (ri := elm.ResistorIEC().up().label("r", loc="top"))
 d += elm.Line().right(2.5)
 d += elm.Dot(open=True).label("+", loc="top")

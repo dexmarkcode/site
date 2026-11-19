@@ -27,7 +27,7 @@ save_fig(fig, "ch01_lattice")
 
 # 1.2 Simple circuit: battery, switch, lamp with current direction
 d = drawing()
-d += (b := elm.BatteryCell().up().label("9 V", loc="top"))
+d += (b := elm.BatteryCell().up().reverse().label("9 V", loc="top"))
 d += elm.Line().right(1)
 d += elm.Switch(action="close").right().label("S", loc="top")
 d += elm.Line().right(1)
