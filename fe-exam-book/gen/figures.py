@@ -667,6 +667,209 @@ def _():
     save(f, "fig09_bh_curve")
 
 
+# ------------------------------------------------------------------ Chapter 10
+@fig("fig10_three_phase")
+def _():
+    t = np.linspace(0, 2, 800)
+    f, ax = plt.subplots(figsize=(6.2, 2.9))
+    for k, (c, lab) in enumerate([(INK, "$v_{an}$"), (COPPER, "$v_{bn}$"), (TEAL, "$v_{cn}$")]):
+        ax.plot(t, np.cos(2 * np.pi * t - 2 * np.pi * k / 3), color=c, label=lab)
+    ax.axhline(0, color="#555", lw=0.7)
+    ax.set_xlabel("Time (cycles)"); ax.set_yticks([-1, 0, 1]); ax.legend(ncol=3, loc="upper right", fontsize=9)
+    ax.set_ylim(-1.25, 1.5)
+    save(f, "fig10_three_phase")
+
+
+@fig("fig10_wye_delta")
+def _():
+    f, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 3.4))
+    for a in (a1, a2):
+        a.set_aspect("equal"); a.axis("off"); a.set_xlim(-1.6, 1.6); a.set_ylim(-1.35, 1.9)
+    ang = [90, -30, 210]
+    P = [np.array([np.cos(np.radians(g)), np.sin(np.radians(g))]) for g in ang]
+    for p_, lab in zip(P, "abc"):
+        a1.annotate("", xy=p_, xytext=(0, 0), arrowprops=dict(arrowstyle="-|>", color=INK, lw=1.8))
+        a1.text(*(p_ * 1.13), f"$V_{{{lab}n}}$", ha="center", va="center", color=INK, fontsize=11)
+    a1.annotate("", xy=P[0], xytext=P[1], arrowprops=dict(arrowstyle="-|>", color=COPPER, lw=1.6))
+    a1.text(0.72, 0.45, "$V_{ab} = \\sqrt{3}\\,V_{an}\\angle 30°$", color=COPPER, fontsize=9.5)
+    a1.set_title("Wye: line voltage = $\\sqrt{3}$ × phase voltage", fontsize=9.5, pad=14)
+    tri = [np.array([0, 1.15]), np.array([1.0, -0.6]), np.array([-1.0, -0.6])]
+    for i in range(3):
+        p0, p1 = tri[i], tri[(i + 1) % 3]
+        a2.plot([p0[0], p1[0]], [p0[1], p1[1]], color=INK, lw=2)
+        m = (p0 + p1) / 2
+        a2.text(*(m * 1.25), ["$I_{ab}$", "$I_{bc}$", "$I_{ca}$"][i], color=INK, fontsize=10, ha="center", va="center")
+    for v, lab in zip(tri, "abc"):
+        out = v * 1.35
+        a2.annotate("", xy=v, xytext=out, arrowprops=dict(arrowstyle="-|>", color=COPPER, lw=1.5))
+        a2.text(*(out * 1.05), f"$I_{lab}$", color=COPPER, ha="center", va="center", fontsize=11)
+    a2.set_title("Delta: line current = $\\sqrt{3}$ × phase current", fontsize=9.5, pad=14)
+    save(f, "fig10_wye_delta")
+
+
+@fig("fig10_transformer")
+def _():
+    with schemdraw.Drawing(show=False) as d:
+        d.config(unit=2.3)
+        a = elm.Dot(open=True).label("$V_1$", loc="left")
+        elm.Line().right().length(0.8)
+        n = elm.Dot()
+        elm.Resistor().right().label("$R_{eq}$")
+        elm.Inductor().right().label("$jX_{eq}$")
+        elm.Line().right().length(0.8)
+        o = elm.Dot(open=True).label("$aV_2$", loc="right")
+        elm.Line().at(n.center).down().length(0.6)
+        elm.Line().left().length(0.7)
+        elm.Resistor().down().label("$R_c$", loc="bottom")
+        p1 = elm.Line().right().length(1.4)
+        elm.Inductor().up().label("$jX_m$", loc="bottom")
+        elm.Line().left().length(0.7)
+        elm.Line().at(p1.center).down().length(0.6)
+        bn = elm.Dot()
+        elm.Line().left().tox(a.center)
+        elm.Dot(open=True)
+        elm.Line().at(bn.center).right().tox(o.center)
+        elm.Dot(open=True)
+    sch_save(d, "fig10_transformer")
+
+
+@fig("fig10_torque_speed")
+def _():
+    s = np.linspace(0.001, 1, 500)
+    R2, X = 0.05, 0.25
+    T = (R2 / s) / ((0.03 + R2 / s) ** 2 + X ** 2)
+    T = T / T.max() * 2.6
+    n = 1 - s
+    f, ax = plt.subplots(figsize=(5.8, 3.3))
+    ax.plot(n, T, color=INK)
+    k = np.argmax(T)
+    ax.plot(n[k], T[k], "o", color=COPPER); ax.text(n[k] - 0.02, T[k] + 0.12, "Breakdown torque", ha="right", fontsize=9.5, color=COPPER)
+    ax.plot(0, T[-1], "o", color=COPPER); ax.text(0.03, T[-1] + 0.14, "Starting torque", fontsize=9.5, color=COPPER)
+    ax.axvspan(0.93, 1.0, color=TEAL, alpha=0.12); ax.text(0.9, 0.25, "Normal\noperating\nregion", ha="right", fontsize=9, color=TEAL)
+    ax.set_xlabel("Speed (fraction of synchronous speed)"); ax.set_ylabel("Torque (per unit)"); ax.set_xlim(0, 1.02); ax.set_ylim(0, 3.0)
+    save(f, "fig10_torque_speed")
+
+
+# ------------------------------------------------------------------ Chapter 11
+@fig("fig11_feedback")
+def _():
+    f, ax = blank(7.0, 2.4)
+    ax.set_xlim(0, 14); ax.set_ylim(0, 4.6)
+    ax.text(0.2, 3.1, "$R(s)$", fontsize=12)
+    arrow(ax, (1.0, 3.0), (2.55, 3.0))
+    ax.add_patch(Circle((2.9, 3.0), 0.35, fc="white", ec=INK, lw=1.3)); ax.text(2.55, 3.45, "+", fontsize=11); ax.text(2.55, 2.25, "−", fontsize=13)
+    arrow(ax, (3.25, 3.0), (5.0, 3.0)); ax.text(3.7, 3.2, "$E(s)$", fontsize=10.5)
+    box(ax, 5.0, 2.4, 2.2, 1.2, "Controller\n$G_c(s)$", fc=LIGHT, fs=10)
+    arrow(ax, (7.2, 3.0), (8.4, 3.0))
+    box(ax, 8.4, 2.4, 2.2, 1.2, "Plant\n$G_p(s)$", fc=LIGHT, fs=10)
+    arrow(ax, (10.6, 3.0), (13.2, 3.0)); ax.text(12.4, 3.2, "$C(s)$", fontsize=12)
+    ax.plot([11.8, 11.8, 9.2], [3.0, 0.9, 0.9], color="#333", lw=1.3)
+    box(ax, 6.9, 0.35, 2.3, 1.1, "Sensor $H(s)$", fc="white", fs=10)
+    ax.plot([6.9, 2.9], [0.9, 0.9], color="#333", lw=1.3); arrow(ax, (2.9, 0.9), (2.9, 2.62))
+    save(f, "fig11_feedback")
+
+
+@fig("fig11_step_specs")
+def _():
+    z, wn = 0.35, 1.0
+    t = np.linspace(0, 16, 800); wd = wn * np.sqrt(1 - z * z)
+    y = 1 - np.exp(-z * wn * t) * (np.cos(wd * t) + z / wd * np.sin(wd * t))
+    f, ax = plt.subplots(figsize=(6.2, 3.4))
+    ax.plot(t, y, color=INK)
+    ax.axhline(1, color="#555", lw=0.8, ls=":")
+    ax.axhspan(0.98, 1.02, color=TEAL, alpha=0.15)
+    Tp = np.pi / wd; ymax = 1 + np.exp(-z * np.pi / np.sqrt(1 - z * z))
+    ax.plot([Tp, Tp], [0, ymax], color=COPPER, ls="--", lw=1); ax.text(Tp + 0.15, 0.12, "$T_p = \\pi/\\omega_d$", color=COPPER)
+    ax.annotate("", xy=(Tp + 1.2, ymax), xytext=(Tp + 1.2, 1.0), arrowprops=dict(arrowstyle="<->", color=RED))
+    ax.text(Tp + 1.4, (ymax + 1) / 2, "% overshoot", color=RED, va="center")
+    Ts = 4 / (z * wn)
+    ax.plot([Ts, Ts], [0, 1.02], color=TEAL, ls="--", lw=1); ax.text(Ts + 0.15, 0.3, "$T_s \\approx 4/\\zeta\\omega_n$\n(2% band)", color=TEAL)
+    ax.set_xlabel("Time (s)"); ax.set_ylabel("$c(t)$"); ax.set_ylim(0, 1.5)
+    save(f, "fig11_step_specs")
+
+
+@fig("fig11_root_locus")
+def _():
+    import numpy.polynomial.polynomial as Pn
+    Ks = np.concatenate([np.linspace(0, 50, 800), np.linspace(50, 200, 400)])
+    roots = []
+    for K in Ks:
+        r = np.roots([1, 6, 8, K]); roots.append(sorted(r, key=lambda z: (z.imag, z.real)))
+    roots = np.array(roots)
+    f, ax = plt.subplots(figsize=(5.4, 4.0))
+    for k in range(3):
+        ax.plot(roots[:, k].real, roots[:, k].imag, ".", ms=1.6, color=INK)
+    for p_ in [0, -2, -4]:
+        ax.plot(p_, 0, "x", ms=10, mew=2, color=COPPER)
+    ax.axhline(0, color="#555", lw=0.7); ax.axvline(0, color="#555", lw=0.8)
+    ax.plot([0, 0], [np.sqrt(8), -np.sqrt(8)], "o", color=RED, ms=5)
+    ax.text(0.15, np.sqrt(8) + 0.2, "$j\\omega$ crossing at $K = 48$", color=RED, fontsize=9)
+    ax.text(-0.85, -0.6, "breakaway", fontsize=9, color=GREY)
+    ax.set_xlim(-7, 2.5); ax.set_ylim(-5, 5); ax.set_xlabel("$\\sigma$"); ax.set_ylabel("$j\\omega$")
+    ax.text(-6.8, 4.3, "× open-loop poles", color=COPPER, fontsize=9.5)
+    save(f, "fig11_root_locus")
+
+
+@fig("fig11_bode")
+def _():
+    w = np.logspace(-1, 2, 600)
+    G = 12 / (1j * w * (1j * w + 2) * (1j * w + 5))
+    mag = 20 * np.log10(np.abs(G)); ph = np.degrees(np.unwrap(np.angle(G)))
+    f, (a1, a2) = plt.subplots(2, 1, figsize=(6.0, 4.6), sharex=True)
+    a1.semilogx(w, mag, color=INK); a1.axhline(0, color="#555", lw=0.8)
+    a2.semilogx(w, ph, color=COPPER); a2.axhline(-180, color="#555", lw=0.8)
+    wgc = w[np.argmin(np.abs(mag))]; wpc = w[np.argmin(np.abs(ph + 180))]
+    pm = 180 + np.interp(wgc, w, ph); gm = -np.interp(wpc, w, mag)
+    a1.annotate("", xy=(wpc, 0), xytext=(wpc, -gm), arrowprops=dict(arrowstyle="<->", color=RED)); a1.text(wpc * 1.1, -gm / 2, f"GM ≈ {gm:.0f} dB", color=RED, fontsize=9.5)
+    a2.annotate("", xy=(wgc, -180), xytext=(wgc, -180 + pm), arrowprops=dict(arrowstyle="<->", color=TEAL)); a2.text(wgc * 0.35, -165, f"PM ≈ {pm:.0f}°", color=TEAL, fontsize=9.5)
+    a1.axvline(wgc, color=TEAL, ls=":", lw=0.9); a2.axvline(wgc, color=TEAL, ls=":", lw=0.9)
+    a1.axvline(wpc, color=RED, ls=":", lw=0.9); a2.axvline(wpc, color=RED, ls=":", lw=0.9)
+    a1.set_ylabel("Magnitude (dB)"); a2.set_ylabel("Phase (°)"); a2.set_xlabel("$\\omega$ (rad/s)")
+    a1.set_ylim(-60, 40); a2.set_ylim(-270, -60)
+    save(f, "fig11_bode")
+
+
+# ------------------------------------------------------------------ Chapter 12
+@fig("fig12_am")
+def _():
+    t = np.linspace(0, 2, 4000)
+    m = 0.5
+    env = 1 + m * np.cos(2 * np.pi * t)
+    f, ax = plt.subplots(figsize=(6.4, 2.8))
+    ax.plot(t, env * np.cos(2 * np.pi * 25 * t), color=INK, lw=0.8)
+    ax.plot(t, env, color=COPPER, ls="--", lw=1.4); ax.plot(t, -env, color=COPPER, ls="--", lw=1.4)
+    ax.annotate("", xy=(0, 1.5), xytext=(0, -1.5), arrowprops=dict(arrowstyle="<->", color=RED)); ax.text(-0.16, 1.55, "$V_{max}$", color=RED)
+    ax.annotate("", xy=(0.5, 0.5), xytext=(0.5, -0.5), arrowprops=dict(arrowstyle="<->", color=TEAL, lw=1.6)); ax.text(0.42, -0.85, "$V_{min}$", color=TEAL, fontsize=11, bbox=dict(fc="white", ec="none"))
+    ax.set_yticks([]); ax.set_xlabel("Time (message periods)"); ax.set_ylim(-1.8, 1.8)
+    save(f, "fig12_am")
+
+
+@fig("fig12_spectrum")
+def _():
+    f, ax = plt.subplots(figsize=(5.8, 2.8))
+    for x, h, c, lab in [(-1, 0.45, COPPER, "LSB\n$f_c - f_m$"), (0, 1.0, INK, "Carrier\n$f_c$"), (1, 0.45, COPPER, "USB\n$f_c + f_m$")]:
+        ax.plot([x, x], [0, h], color=c, lw=3); ax.plot(x, h, "o", color=c)
+        ax.text(x, h + 0.08, lab, ha="center", fontsize=9.5, color=c)
+    ax.annotate("", xy=(-1, -0.12), xytext=(1, -0.12), arrowprops=dict(arrowstyle="<->", color=GREY)); ax.text(0, -0.24, "Bandwidth $2f_m$", ha="center", color=GREY, fontsize=9.5)
+    ax.set_xlim(-2, 2); ax.set_ylim(-0.32, 1.35); ax.set_xticks([]); ax.set_yticks([]); ax.grid(False)
+    ax.spines["left"].set_visible(False); ax.set_xlabel("Frequency")
+    save(f, "fig12_spectrum")
+
+
+@fig("fig12_qam")
+def _():
+    f, ax = plt.subplots(figsize=(3.8, 3.8))
+    g = [0, 1, 3, 2]
+    for i, x in enumerate([-3, -1, 1, 3]):
+        for j, y in enumerate([-3, -1, 1, 3]):
+            ax.plot(x, y, "o", color=INK, ms=8)
+            ax.text(x, y + 0.42, f"{g[i]:02b}{g[j]:02b}", ha="center", fontsize=7.5, color=COPPER)
+    ax.axhline(0, color="#555", lw=0.8); ax.axvline(0, color="#555", lw=0.8)
+    ax.set_xlim(-4.2, 4.2); ax.set_ylim(-4.2, 4.4); ax.set_aspect("equal")
+    ax.set_xlabel("In-phase (I)"); ax.set_ylabel("Quadrature (Q)"); ax.set_xticks([]); ax.set_yticks([])
+    save(f, "fig12_qam")
+
+
 if __name__ == "__main__":
     names = sys.argv[1:] or list(FIGS)
     for n in names:
