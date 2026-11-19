@@ -40,3 +40,11 @@
 5. 0.643 kg/s, about 36 L/min.
 6. 39.2 °C. The internal resistance (0.10 K/W) is largest but set by the cell; the interface material (0.08 K/W) is usually the first one the pack designer can improve.
 7. About 3.65 kWh (13.1 MJ); roughly 44 minutes at 5 kW.
+
+## Chapter 6
+1. The offset adds 0.45 % per day, so the error reaches 10 % after about 11 days.
+2. About 143 Ah; with ±1.5 % on each reading the estimate could lie between roughly 137 and 151 Ah.
+4. *R*~0~ ≈ 1.35 mΩ, a 35 % increase over new.
+5. 0.72 Ah per month over 48 hours of balancing: at least 15 mA, so a 50–100 mA design gives a comfortable margin.
+6. About 330 A (roughly 3.3C). In practice the limit is lower to avoid lithium plating, which is governed by anode potential rather than terminal voltage, and to allow for cell variation and temperature.
+7. About 24 minutes; average power about 111 kW.
