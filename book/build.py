@@ -73,8 +73,18 @@ BACK = [("appA", "Appendix A: Units, Symbols and the Resistor Colour Code"),
 FRAC = re.compile(r"\{\{frac\|([^|{}]+)\|([^{}]+?)\}\}")
 
 
+MAT = re.compile(r"\{\{mat\|([^{}]+?)\}\}")
+
+
+def _mat(m):
+    rows = [r.split(",") for r in m.group(1).split(";")]
+    body = "".join("<tr>" + "".join(f"<td>{c.strip()}</td>" for c in r) + "</tr>" for r in rows)
+    return f'<span class="mtx"><table>{body}</table></span>'
+
+
 def prep(md):
     """Expand the manuscript's small macros into inline HTML."""
+    md = MAT.sub(_mat, md)
     return FRAC.sub(lambda m: f'<span class="frac"><span class="num">{m.group(1).strip()}</span><span class="den">{m.group(2).strip()}</span></span>', md)
 
 

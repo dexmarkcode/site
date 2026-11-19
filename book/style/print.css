@@ -163,3 +163,7 @@ caption { caption-side: top; font: 600 9pt "Sans"; color: var(--navy); text-alig
 .part.mainstart { page: partfirst; }
 @page partfirst { counter-reset: page 1; background: var(--navy); @top-left { content: none; } @top-right { content: none; } @top-center { content: none; } @bottom-center { content: none; } }
 .cbig, .toc, .chapter-head, h2, h3, table, .keyeq, .eq { font-variant-numeric: lining-nums; }
+
+.mtx { display: inline-block; vertical-align: middle; border-left: 1pt solid #1a1a1a; border-right: 1pt solid #1a1a1a; padding: 1pt 2pt; margin: 0 3pt; border-radius: 2pt; }
+.mtx table { width: auto; border: none; font: inherit; margin: 0; border-collapse: collapse; }
+.mtx td, .mtx tbody tr:last-child td { border: none; padding: 1pt 5pt; text-align: center; }

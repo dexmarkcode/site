@@ -32,3 +32,7 @@ caption { font-weight: bold; text-align: left; margin-bottom: 0.4em; color: #1d3
 dt { font-weight: bold; color: #1d3557; margin-top: 0.6em; }
 dd { margin-left: 1em; }
 sub, sup { font-size: 0.7em; }
+
+.mtx { display: inline-block; vertical-align: middle; border-left: 1px solid #1a1a1a; border-right: 1px solid #1a1a1a; padding: 1px 2px; margin: 0 3px; border-radius: 2px; }
+.mtx table { width: auto; border: none; font: inherit; margin: 0; border-collapse: collapse; }
+.mtx td, .mtx tbody tr:last-child td { border: none; padding: 1px 5px; text-align: center; }
