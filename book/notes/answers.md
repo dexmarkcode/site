@@ -81,3 +81,11 @@
 5. 109 °C; maximum loss about 429 W.
 6. About 9.6 times more cycles.
 7. About 192 V of overshoot; peak about 1 040 V. A 1 200 V device has only about 13 % margin, which is tight once cosmic-ray derating is considered: reduce loop inductance or slow the turn-off.
+
+## Chapter 11
+1. States 000 and 111 (all lower or all upper switches on) give zero voltage; the other six are active.
+2. 490 V with SPWM; 566 V with SVPWM.
+3. At least 459 V. At 330 V only about 191 V peak phase is available, so full torque cannot be reached at base speed; base speed effectively falls or field weakening starts earlier.
+4. 4.0 V, the same as the IGBT example: the shorter dead time is offset by the higher frequency and voltage, but relative to an 800 V link the error is half as large.
+5. About 148 A at *M* = 0.6 and 138 A at *M* = 0.9; ripple current peaks at intermediate modulation index rather than at maximum.
+7. 325 A, within the 450 A rating, so ASC can be sustained at high speed.
