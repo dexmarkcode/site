@@ -65,3 +65,11 @@
 6. 1.56 times more copper, so DC resistance falls to about 64 % of the stranded value.
 7. About 23 seconds.
 8. About 164 MPa; roughly 19 100 rpm for 150 MPa.
+
+## Chapter 9
+1. *i*~b~ = *i*~c~ = −150 A; *i*~α~ = 300 A, *i*~β~ = 0.
+2. 0°: *i*~d~ = 300 A, *i*~q~ = 0. 30°: *i*~d~ = 260 A, *i*~q~ = −150 A. 90°: *i*~d~ = 0, *i*~q~ = −300 A.
+3. d-axis *K*~p~ = 1.51 V/A; q-axis *K*~p~ = 4.52 V/A; *K*~i~ = 126 V/(A·s) on both. 2 kHz is one-tenth of the sampling rate: at the upper end of what is prudent.
+4. *i*~d~ ≈ −107 A; torque ≈ 135 N·m (compared with 96 N·m with *i*~d~ = 0).
+5. *ω*~e~ = 3 770 rad/s; *v*~d~ ≈ −254 V, *v*~q~ ≈ 132 V; magnitude ≈ 287 V, which exceeds the 231 V available. More negative *i*~d~ (or less torque) is needed.
+7. 10 rad/s, about 1.6 Hz.
