@@ -250,6 +250,11 @@ class Figure:
                 bend = f
                 knee, foot = ik(hip, J["foot" + k], TH, SN, bend)
                 J["knee" + k], J["foot" + k] = knee, foot
+            if self.stance == "shiko" and not self.kick:
+                # knees point to the sides: seen side-on the thighs are foreshortened
+                for k, dx in (("B", -0.035), ("F", 0.035)):
+                    J["knee" + k] = (hip[0] + f * dx * 0.6, hip[1] - 0.15)
+                    J["foot" + k] = (hip[0] + f * dx, 0.03)
             if self.kick:
                 self._side_kick(J)
             for side, preset in (("F", self.right), ("B", self.left)):
@@ -717,3 +722,17 @@ def with_tools(fig, tools):
         for t in tools:
             t(ax, J)
     return fn
+
+
+def big_embusen(name, pts, marks, w_in=3.2, h_in=3.0, lim=0.6):
+    """Single large floor plan; marks: list of (label, (x,y))."""
+    def fn(ax):
+        embusen(ax, pts, s=1.0)
+        for t, (x, y) in marks:
+            ax.add_patch(Circle((x, y), 0.035, fc="white", ec="black", lw=0.7, zorder=9))
+            label(ax, (x, y), t, size=6.5)
+        # compass arrow
+        arrow(ax, (-lim + 0.08, -lim + 0.1), (-lim + 0.08, -lim + 0.28), lw=0.8)
+        label(ax, (-lim + 0.08, -lim + 0.32), "front", size=6)
+        return 1
+    diagram(name, fn, w_in=w_in, h_in=h_in, xlim=(-lim, lim), ylim=(-lim + 0.05, lim + 0.05))
