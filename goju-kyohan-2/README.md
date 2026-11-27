@@ -4,7 +4,7 @@
 
 ## Finished files (`output/`)
 
-- `…Stivers.pdf`: print interior, 6 × 9 in trim, single column, black and white, 337 pages
+- `…Stivers.pdf`: print interior, 6 × 9 in trim, single column, black and white, 345 pages
 - `…Stivers.epub`: EPUB 3 with embedded fonts and cover
 - `…Stivers.docx`: Word manuscript, 6 × 9 in page size (open in Word and update the table of contents field)
 
