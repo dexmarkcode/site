@@ -99,7 +99,7 @@ NEUTRAL = dict(
     lknee=(0.15, 0, 1), rknee=(-0.15, 0, 1),
     lh=(23, -60, 2), rh=(-23, -60, 2), lel=None, rel=None,
     lhand="fist", rhand="fist", lroll=0, rroll=0, lworld=False, rworld=False,
-    offset=(0, 0, 0), yaw=0, props=(), belt="black",
+    offset=(0, 0, 0), yaw=0, props=(), belt="black", bend=0,
 )
 
 STANCES = {
@@ -179,7 +179,7 @@ def skeleton(p):
     P = np.array(p["pelvis"], float)
     Rh = ry(p["hip_yaw"])
     def Rt(t):
-        return ry(p["hip_yaw"] + t * p["chest_yaw"]) @ rx(p["lean"])
+        return ry(p["hip_yaw"] + t * p["chest_yaw"]) @ rx(p["lean"]) @ rz(t * p.get("bend", 0))
     Rc = Rt(1.0)
     N = P + Rc @ np.array([0, 52, 0])
     J = {"P": P, "N": N}
