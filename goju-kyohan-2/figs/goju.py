@@ -653,3 +653,67 @@ def hand_panel(kind, ang, fore_ang=None, title=None, s=3.4):
         if title:
             label(ax, (0, -0.03), title, size=6.3)
     return fn
+
+
+# ---------------------------------------------------------------- implements
+def _poly(ax, pts, fc="white", lw=0.9, z=6):
+    ax.add_patch(MPoly(pts, closed=True, fc=fc, ec="black", lw=lw, zorder=z, joinstyle="round"))
+
+
+def chi_ishi(ax, hand, ang, L=0.22, z=6):
+    a = math.radians(ang)
+    end = (hand[0] + L * math.cos(a), hand[1] + L * math.sin(a))
+    g = capsule((hand[0] - 0.03 * math.cos(a), hand[1] - 0.03 * math.sin(a)), end, 0.008, 0.008)
+    _poly(ax, list(g.exterior.coords), z=z - 1)
+    w = Point(end).buffer(0.045, 16)
+    cyl = capsule((end[0] - 0.02 * math.cos(a), end[1] - 0.02 * math.sin(a)), (end[0] + 0.035 * math.cos(a), end[1] + 0.035 * math.sin(a)), 0.045, 0.045)
+    _poly(ax, list(cyl.exterior.coords), z=z)
+
+
+def jar(ax, hand, z=6, s=1.0):
+    x, y = hand
+    pts = [(x - 0.02, y), (x + 0.02, y), (x + 0.025, y - 0.02), (x + 0.055, y - 0.06), (x + 0.06, y - 0.13),
+           (x + 0.045, y - 0.17), (x - 0.045, y - 0.17), (x - 0.06, y - 0.13), (x - 0.055, y - 0.06), (x - 0.025, y - 0.02)]
+    pts = [(x + (px - x) * s, y + (py - y) * s) for px, py in pts]
+    _poly(ax, pts, z=z)
+    ax.plot([x - 0.028 * s, x + 0.028 * s], [y - 0.012 * s, y - 0.012 * s], c="black", lw=0.6, zorder=z + 1)
+
+
+def ishi_sashi(ax, hand, z=6, s=1.0, ang=0):
+    x, y = hand
+    g = Polygon([(x - 0.045, y - 0.03), (x + 0.045, y - 0.03), (x + 0.05, y - 0.11), (x - 0.05, y - 0.11)]).buffer(0.01)
+    from shapely import affinity
+    g = affinity.rotate(g, ang, origin=(x, y))
+    g = affinity.scale(g, s, s, origin=(x, y))
+    _poly(ax, list(g.exterior.coords), z=z)
+    ring = affinity.rotate(Point(x, y - 0.01).buffer(0.028).difference(Point(x, y - 0.01).buffer(0.016)), ang, origin=(x, y))
+    for gg in (ring.geoms if hasattr(ring, "geoms") else [ring]):
+        _poly(ax, list(gg.exterior.coords), z=z)
+        for i_ in gg.interiors:
+            _poly(ax, list(i_.coords), z=z + 0.1)
+
+
+def kongoken(ax, c, w=0.36, h=0.2, z=6, ang=0):
+    from matplotlib.patches import Ellipse as E
+    ax.add_patch(E(c, w, h, angle=ang, fc="none", ec="black", lw=2.6, zorder=z))
+    ax.add_patch(E(c, w, h, angle=ang, fc="none", ec="white", lw=1.2, zorder=z + 0.1))
+
+
+def makiwara(ax, x, top=0.62, flex=0.0):
+    _poly(ax, [(x - 0.035, 0.0), (x + 0.035, 0.0), (x + 0.012 + flex, top), (x - 0.012 + flex, top)], z=1)
+    _poly(ax, [(x - 0.03 + flex * 0.85, top - 0.17), (x + 0.026 + flex * 0.85, top - 0.17), (x + 0.024 + flex, top - 0.02), (x - 0.028 + flex, top - 0.02)], z=1.5)
+    for k in range(1, 6):
+        yy = top - 0.17 + k * 0.025
+        ax.plot([x - 0.028 + flex * 0.9, x + 0.025 + flex * 0.9], [yy, yy], c="black", lw=0.5, zorder=1.6)
+    ax.plot([x - 0.12, x + 0.12], [0, 0], c="black", lw=0.8)
+
+
+def with_tools(fig, tools):
+    """tools: list of callables f(ax, J)."""
+    def fn(ax):
+        J = fig.draw(ax)
+        x0, x1 = ax.get_xlim()
+        floor(ax, x0 + 0.02, x1 - 0.02)
+        for t in tools:
+            t(ax, J)
+    return fn
