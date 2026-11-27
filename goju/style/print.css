@@ -192,3 +192,6 @@ hr { border: 0; border-top: 0.6pt solid #000; margin: 14pt 30%; }
 .programme table { font-size: 8.4pt; }
 .about p { margin-bottom: 0; }
 a { color: inherit; text-decoration: none; }
+.drill > p:first-child, .problem > p:first-child, .kata > p:first-child, .street > p:first-child, .fault > p:first-child { break-after: avoid; }
+.problem > p:nth-child(odd) { break-after: avoid; }
+.keypoints h3, .exercises h3 { break-after: avoid; }

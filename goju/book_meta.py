@@ -4,7 +4,7 @@ BOOK = {
     "author": "Dr Beverly J. Stivers",
     "short": "GOJU-RYU CLOSE-COMBAT MASTERCLASS",
     "file": "Goju-Ryu-Karate-Close-Combat-Masterclass_Dr-Beverly-J-Stivers",
-    "blurb": "A problem-solving manual for the close range of Goju-Ryu karate: structure, kakie sensitivity, trapping, elbows, knees, throws, joint controls and counter-attacks, explained in plain language with more than eighty black-and-white diagrams, partner drills, troubleshooting clinics and a twelve-week training plan for the dojo, for sparring and for the real world.",
+    "blurb": "A problem-solving manual for the close range of Goju-Ryu karate: structure, kakie sensitivity, trapping, elbows, knees, throws, joint controls and counter-attacks, explained in plain language with nearly sixty black-and-white diagrams, partner drills, troubleshooting clinics and a twelve-week training plan for the dojo, for sparring and for the real world.",
     "front": [
         {"file": "foreword.md"},
         {"file": "howto.md"},

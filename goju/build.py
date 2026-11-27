@@ -205,7 +205,7 @@ def build_epub():
            f"# Dedication {{.unnumbered .unlisted .dedication}}\n\n{(MS / 'dedication.md').read_text()}\n\n")
     pre = pre.replace("# Disclaimer", "# Disclaimer {.unnumbered .unlisted}", 1)
     src = BUILD / "book_epub.md"
-    src.write_text(meta_block() + pre + full_markdown("epub"))
+    src.write_text(meta_block().replace(f'author: "{AUTHOR}"\n', "") + pre + full_markdown("epub"))
     cmd = ["pandoc", str(src), "-f", EXT, "-t", "epub3", "-o", str(OUT / f"{FILE}.epub"),
            "--toc", "--toc-depth=2", "--split-level=2", "--resource-path", str(ROOT),
            "--css", str(ROOT / "style/epub.css"), "--epub-title-page=true"]
@@ -224,10 +224,7 @@ def build_docx():
     for cls, style in BOXES.items():
         body = re.sub(rf"^::: ?{re.escape(cls)}\s*$", f'::: {{custom-style="{style}"}}', body, flags=re.M)
     body = body.replace("::: part-intro", '::: {custom-style="Part Intro"}')
-    front = (f"::: {{custom-style=\"Title Block\"}}\n**{TITLE}**\n:::\n\n"
-             f"::: {{custom-style=\"Subtitle Block\"}}\n{SUBTITLE}\n:::\n\n"
-             f"::: {{custom-style=\"Author Block\"}}\n{AUTHOR}\n:::\n\n"
-             f"# Copyright {{.unnumbered}}\n\n{(MS / 'copyright.md').read_text()}\n\n"
+    front = (f"# Copyright {{.unnumbered}}\n\n{(MS / 'copyright.md').read_text()}\n\n"
              f"{(MS / 'disclaimer.md').read_text()}\n\n"
              f"# Dedication {{.unnumbered}}\n\n{(MS / 'dedication.md').read_text()}\n\n")
     src = BUILD / "book_docx.md"

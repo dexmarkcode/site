@@ -106,6 +106,11 @@ def make_reference(path):
             continue
         _font(s, BODY)
     _font(st["Image Caption"], "Arial", 8.5, italic=False)
+    _font(st["Title"], HEAD, 28, bold=True)
+    st["Title"].paragraph_format.space_before = Pt(110)
+    _font(st["Subtitle"], BODY, 14, italic=True)
+    _font(st["Author"], BODY, 16)
+    st["Author"].paragraph_format.space_before = Pt(60)
     st["Image Caption"].paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
     try:
         st["Captioned Figure"].paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
