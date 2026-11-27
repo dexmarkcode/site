@@ -6,7 +6,7 @@ floor(ax, 2, 138)
 p = Pose("uke", "uke", "sanchin", "R")
 f = Figure(ax, p, ox=38, th=-90)
 x_ear = f.P(p.j["head"])[0]
-plumb(ax, x_ear - 0.5, 0, 102)
+ax.plot([x_ear - 0.5] * 2, [0, 102], color=K, lw=0.7, ls=(0, (4, 2.5)), zorder=13)
 for z, t in ((93, "ear"), (81, "shoulder"), (51, "hip")):
     pt = f.P(v(0, 0.5 if z > 80 else 0, z))
     ax.add_patch(Circle((x_ear - 0.5, pt[1]), 1.5, fc=K, zorder=12))
@@ -29,7 +29,7 @@ save(fig, "fig6_1")
 # Figure 6.2 shoulders front
 fig, ax = canvas(W, 2.4, xlim=(0, 120), ylim=(-12, 104))
 floor(ax, 2, 118)
-for i, (sh, ok, cap) in enumerate(((5, False, "Shoulders raised"), (0, True, "Shoulder blades drawn down"))):
+for i, (sh, ok, cap) in enumerate(((8, False, "Shoulders raised"), (0, True, "Shoulder blades drawn down"))):
     x = 30 + i * 60
     p = Pose("uke", "uke", "sanchin", "R", shrug=sh)
     f = Figure(ax, p, ox=x, th=0)
@@ -68,9 +68,9 @@ for i, (ch, ok, cap) in enumerate(((5, False, "Chin poking forward"), (-1.2, Tru
     p = Pose("uke", "uke", "sanchin", "R", chin=ch, lean=1.5 if not ok else 0)
     f = Figure(ax, p, ox=x, th=-90)
     hd = f.P(p.j["head"]); shp = f.P(v(0, 0, p.j["lsh"][2]))
-    plumb(ax, shp[0], shp[1] - 30, hd[1] + 12)
+    ax.plot([shp[0]] * 2, [shp[1] - 30, hd[1] + 12], color=K, lw=0.6, ls=(0, (4, 2.5)), zorder=13)
     eye = hd + np.array([4, 0.8])
-    arrow(ax, eye[0] + 4, eye[1], eye[0] + 20, eye[1] + (-3 if not ok else 0), lw=0.8, ms=5, ls=(0, (2, 1.5)))
-    (tick_mark if ok else cross_mark)(ax, x - 22, 95)
+    arrow(ax, eye[0] + 4, eye[1], eye[0] + 16, eye[1] + (-3 if not ok else 0), lw=0.8, ms=5, ls=(0, (2, 1.5)))
+    (tick_mark if ok else cross_mark)(ax, x - 24, 70)
     sub_label(ax, x, -3, cap, fs=6.4)
 save(fig, "fig6_4")
