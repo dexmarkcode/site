@@ -154,7 +154,13 @@ def postprocess(path):
     from docx.shared import Emu
     maxw = Inches(4.5)
     for shape in doc.inline_shapes:
-        if shape.width > maxw:
-            ratio = maxw / shape.width
-            shape.width, shape.height = Emu(int(maxw)), Emu(int(shape.height * ratio))
+        try:
+            rid = shape._inline.graphic.graphicData.pic.blipFill.blip.embed
+            img = doc.part.related_parts[rid].image
+            natural = Inches(img.px_width / 300.0)
+        except Exception:
+            natural = shape.width
+        target = min(maxw, natural)
+        ratio = target / shape.width
+        shape.width, shape.height = Emu(int(target)), Emu(int(shape.height * ratio))
     doc.save(path)

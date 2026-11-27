@@ -27,4 +27,4 @@ Miyagi-lineage closed-fist version: musubi dachi/rei -> yoi (open hands crossed)
 Frames numbered 1–48 across chs 10–12.
 
 ## Status
-- [x] scaffold/build  - [x] fig library  - chapters written: front matter, ch01-ch06 (figs done). Next: ch07+
+- [x] ALL DONE: 27 chapters, back matter, figures, PDF/EPUB/DOCX built.

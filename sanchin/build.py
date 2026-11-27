@@ -270,11 +270,18 @@ def build_docx():
                  f'::: {{custom-style="Copyright"}}\n{copyright_md}\n:::\n\n'
                  f'```{{=openxml}}\n<w:p><w:r><w:br w:type="page"/></w:r></w:p>\n```\n\n'
                  f'::: {{custom-style="Dedication"}}\n{dedication_md}\n:::\n\n')
-    meta = meta_block().replace('title:\n- type: main\n  text: "' + TITLE + '"\n- type: subtitle\n  text: "' + SUBTITLE + '"\n', "")
+    meta = '---\nlang: en-GB\n---\n\n'
+    toc_field = ('```{=openxml}\n<w:p><w:pPr><w:pStyle w:val="TOCHeading"/></w:pPr><w:r><w:t>Contents</w:t></w:r></w:p>'
+                 '<w:p><w:r><w:fldChar w:fldCharType="begin" w:dirty="true"/></w:r>'
+                 '<w:r><w:instrText xml:space="preserve"> TOC \\o "1-2" \\h \\z \\u </w:instrText></w:r>'
+                 '<w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:t>Right-click and choose Update Field to build the contents list.</w:t></w:r>'
+                 '<w:r><w:fldChar w:fldCharType="end"/></w:r></w:p>'
+                 '<w:p><w:r><w:br w:type="page"/></w:r></w:p>\n```\n\n')
+    titlepage = titlepage + toc_field
     src = BUILD / "book_docx.md"
     src.write_text(meta + titlepage + full_markdown("docx"))
     cmd = ["pandoc", str(src), "-f", MDFMT, "-t", "docx", "-o", str(OUT / f"{SLUG}.docx"),
-           "--reference-doc", str(ref), "--resource-path", str(ROOT), "--toc", "--toc-depth=2", "--dpi=300"]
+           "--reference-doc", str(ref), "--resource-path", str(ROOT), "--dpi=300"]
     subprocess.run(cmd, check=True, cwd=ROOT)
     make_reference.postprocess(OUT / f"{SLUG}.docx")
     print("DOCX written")
