@@ -529,3 +529,43 @@ def foot_axis(heel, ang_deg, length=15):
     a = math.radians(ang_deg)
     d = np.array([math.sin(a), math.cos(a)])
     return np.asarray(heel, float), np.asarray(heel, float) + d * length
+
+
+# ------------------------------------------------------------------ frame strips
+def strip(frames, name, h=2.35, gap=48, sc=0.82, w=W, extra=None):
+    """frames: list of dicts with keys pose, th, num, title, breath, ghost (pose), arrows (callable(ax, fig))."""
+    n = len(frames)
+    xmax = gap * n
+    h = w * 136 / xmax
+    fig, ax = canvas(w, h, xlim=(0, xmax), ylim=(-28, 108))
+    floor(ax, 2, xmax - 2)
+    figs = []
+    for i, fr in enumerate(frames):
+        x = gap * (i + 0.5)
+        if fr.get("ghost") is not None:
+            Figure(ax, fr["ghost"], ox=x + fr.get("gdx", 0), th=fr.get("gth", fr.get("th", -30)), sc=sc, ghost=True, zorder=1)
+        f = Figure(ax, fr["pose"], ox=x, th=fr.get("th", -30), sc=sc, zorder=2)
+        figs.append(f)
+        numdot(ax, x - gap * 0.34, 101, fr["num"], r=4.2, fs=6.6)
+        if fr.get("breath"):
+            breath_tag(ax, x + gap * 0.08, 101, fr["breath"], fs=5.4)
+        ax.text(x, -5, fr["title"], ha="center", va="top", fontsize=5.9, fontweight="bold", linespacing=1.05)
+        if fr.get("sub"):
+            ax.text(x, -17, fr["sub"], ha="center", va="top", fontsize=5.4, style="italic", family=SERIF, linespacing=1.0)
+        if fr.get("arrows"):
+            fr["arrows"](ax, f)
+    if extra:
+        extra(ax, figs)
+    save(fig, name)
+    return figs
+
+
+def move_arrow(ax, f, j, dx=0, dy=0, dz=0, rad=0.0, lw=1.0, ms=6):
+    """Arrow from a joint (3D) to that joint + offset, in figure projection."""
+    a = f.P(f.p.j[j]); b = f.P(f.p.j[j] + v(dx, dy, dz))
+    arrow(ax, a[0], a[1], b[0], b[1], rad=rad, lw=lw, ms=ms, z=30)
+
+
+def step_arrow(ax, f, start, end, rad=0.3):
+    a = f.P(v(*start)); b = f.P(v(*end))
+    arrow(ax, a[0], a[1], b[0], b[1], rad=rad, lw=1.0, ms=6, z=30, ls=(0, (3, 1.5)))
