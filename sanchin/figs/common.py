@@ -203,6 +203,16 @@ def legs(kind, lead="R"):
         lead_kn = v(s * 13, 12, 27); rear_kn = v(-s * 13, -3, 27)
         lead_dir = v(s * 0.3, 0.95, 0); rear_dir = v(-s * 0.35, 0.94, 0)
         hz = 50
+    elif kind == "sanchin_collapse":   # fault: knees caving past the feet
+        lead_ank = v(s * 10, 8, 4); rear_ank = v(-s * 10, -8, 4)
+        lead_kn = v(s * 2.5, 12, 26); rear_kn = v(-s * 2.5, -2, 26)
+        lead_dir = v(-s * 0.5, 0.87, 0); rear_dir = v(-s * 0.35, 0.94, 0)
+        hz = 48.5
+    elif kind == "sanchin_deep":   # fault: sitting too low
+        lead_ank = v(s * 10, 9, 4); rear_ank = v(-s * 10, -9, 4)
+        lead_kn = v(s * 7, 18, 22); rear_kn = v(-s * 7, 3, 22)
+        lead_dir = v(-s * 0.4, 0.92, 0); rear_dir = v(-s * 0.17, 0.98, 0)
+        hz = 42
     elif kind == "sanchin_straight":   # fault: locked knees
         lead_ank = v(s * 10, 8, 4); rear_ank = v(-s * 10, -8, 4)
         lead_kn = v(s * 9, 6, 29); rear_kn = v(-s * 9, -5, 29)
@@ -402,7 +412,7 @@ class Figure:
                 if abs(sx) > 0.25 and not self.ghost:
                     eye = c + np.array([sx * 3.4 * sc, 0.8 * sc])
                     self.ax.add_patch(Circle(eye, 0.65 * sc, fc=K, ec="none", zorder=z + 0.002))
-                elif not self.ghost:
+                elif not self.ghost and float(fwd @ self.c) > 0:
                     for ex in (-2.2, 2.2):
                         self.ax.add_patch(Circle(c + np.array([ex * sc, 0.8 * sc]), 0.55 * sc, fc=K, ec="none", zorder=z + 0.002))
         # neck drawn under head, over torso
