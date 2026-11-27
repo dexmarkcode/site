@@ -261,3 +261,29 @@ def torso_schematic(ax, mode="neutral", label=True, dian=True, arrows=None):
         ax.add_patch(Circle((0, -20), 1.2, fc=INK))
     for a in arrows or []:
         arrow(ax, a[0], a[1], lw=0.9, ms=5)
+
+
+def hand_side(ax, curl=0.0, thumb=0.0, x=0, y=0, s=1.0, open_palm=False):
+    """Side (little-finger side away) view of a hand forming a fist. curl 0..1, thumb 0..1."""
+    from body import capsule2d
+    T = lambda p: np.array(p) * s + np.array([x, y])
+    # forearm and palm
+    ax.add_patch(Polygon([T(q) for q in [(-46, -7), (-20, -8), (-2, -9), (2, -4), (2, 7), (-20, 8), (-46, 7)]],
+                         closed=True, fc="white", ec=INK, lw=0.9))
+    ax.plot(*np.array([T((-30, -7.5)), T((-30, 7.5))]).T, color=INK, lw=0.5)  # cuff line
+    # fingers: three phalanges, curling down (negative y) about joints
+    lens = (11, 7.5, 6)
+    angs = np.radians([90 * max(0.0, (curl - 0.35) / 0.65), 100 * min(1.0, curl * 1.8), 55 * min(1.0, curl * 2.6)])
+    p = np.array([1.5, 3.5]); a = 0.0
+    for L, da, r in zip(lens, angs, (3.6, 3.3, 3.0)):
+        a -= da
+        q = p + L * np.array([np.cos(a), np.sin(a)])
+        ax.add_patch(Polygon([T(v) for v in capsule2d(p, q, r, r * 0.92, 8)], closed=True, fc="white", ec=INK, lw=0.8))
+        p = q
+    # thumb: from base of palm, folds across the index/middle fingers as thumb -> 1
+    b = np.array([-12, 6])
+    ta = np.radians(35 - 75 * thumb)
+    t1 = b + 11 * np.array([np.cos(ta), np.sin(ta)])
+    t2 = t1 + 9 * np.array([np.cos(ta - np.radians(25 * thumb)), np.sin(ta - np.radians(25 * thumb))])
+    for a_, b_ in ((b, t1), (t1, t2)):
+        ax.add_patch(Polygon([T(v) for v in capsule2d(a_, b_, 3.4, 3.1, 8)], closed=True, fc="white", ec=INK, lw=0.8))
