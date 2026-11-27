@@ -175,7 +175,16 @@ def full_markdown(target):
     return "\n\n".join(md)
 
 
-def meta_block():
+def meta_block(simple=False):
+    if simple:
+        return f"""---
+title: "{TITLE}"
+subtitle: "{SUBTITLE}"
+author: "{AUTHOR}"
+lang: en-GB
+---
+
+"""
     return f"""---
 title:
 - type: main
@@ -222,7 +231,7 @@ def build_docx():
     pre = (f"# Copyright {{.unnumbered}}\n\n{copyright_md}\n\n"
            f"# Dedication {{.unnumbered}}\n\n{dedication_md}\n\n")
     src = BUILD / "book_docx.md"
-    src.write_text(meta_block() + pre + full_markdown("docx"))
+    src.write_text(meta_block(simple=True) + pre + full_markdown("docx"))
     out = OUT / f"{STEM}.docx"
     subprocess.run(["pandoc", str(src), "-f", MDFMT, "-t", "docx", "-o", str(out), "--toc", "--toc-depth=2",
                     "--resource-path", str(ROOT), "--reference-doc", str(ref)], check=True, cwd=ROOT)
@@ -233,7 +242,7 @@ def build_docx():
 def make_reference(path):
     from docx import Document
     from docx.shared import Pt, Inches, RGBColor
-    raw = subprocess.run(["pandoc", "-o", str(path), "--print-default-data-file", "reference.docx"], capture_output=True)
+    raw = subprocess.run(["pandoc", "--print-default-data-file", "reference.docx"], capture_output=True, check=True)
     path.write_bytes(raw.stdout)
     d = Document(str(path))
     for sec in d.sections:
