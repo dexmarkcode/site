@@ -637,7 +637,7 @@ def render_panel(ax, spec, xr=62):
     cx = spec.get("cx", (min(lo) + max(hi)) / 2)
     ax.set_xlim(cx - xr, cx + xr)
     ax.set_ylim(spec.get("ylo", -6), spec.get("yhi", 196))
-    ax.set_aspect("equal")
+    ax.set_aspect("equal", adjustable="datalim", anchor="S")
     ax.axis("off")
     overlay(ax, projs[0], [("ground",)] + list(spec.get("marks", [])))
     if len(projs) > 1:
