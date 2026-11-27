@@ -51,7 +51,8 @@ class Person:
 
     def __init__(self, hip=(0, 0.9), face=1, lean=5, head=0, hands=None, feet=None,
                  style="A", fist=("near", "far"), open_hand=(), elbow=None, knee=None,
-                 toes=None, label=None, crouch=0.0, shoulder_shift=0.0):
+                 toes=None, label=None, crouch=0.0, shoulder_shift=0.0, epos=None):
+        self.epos = epos or {}
         self.hip = hip
         self.face = face
         self.lean = lean
@@ -91,6 +92,12 @@ class Person:
                 e = e1 if (e1[1] - e2[1]) * pref > 0 else e2
             else:                 # 'out' = elbow away from facing (behind), 'in' = in front
                 e = e1 if (e1[0] - e2[0]) * f * (1 if pref == "in" else -1) > 0 else e2
+            if side in self.epos:
+                ex, ey = self.epos[side]
+                d = math.hypot(ex - sx, ey - sy) or 1
+                e = (sx + (ex - sx) / d * L["uarm"], sy + (ey - sy) / d * L["uarm"])
+                d2 = math.hypot(tgt[0] - e[0], tgt[1] - e[1]) or 1
+                h = (e[0] + (tgt[0] - e[0]) / d2 * L["farm"], e[1] + (tgt[1] - e[1]) / d2 * L["farm"])
             j[side + "_el"], j[side + "_hand"] = e, h
             ft = self.feet[side]
             k1, an = _ik((hx, hy), ft, L["thigh"], L["shin"], 1)
