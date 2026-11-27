@@ -295,7 +295,8 @@ class Figure:
     """Draw a Pose on an axes at screen offset (ox, oy) with scale sc (units per 100 height)."""
 
     def __init__(self, ax, pose, ox=50, oy=0, sc=1.0, th=0, elev=0, ghost=False, lw=0.8,
-                 fill=WH, edge=K, belt=True, zorder=2):
+                 fill=WH, edge=K, belt=True, zorder=2, face=True):
+        self.face = face
         self.ax, self.p, self.ox, self.oy, self.sc, self.th = ax, pose, ox, oy, sc, th
         self.elev = math.radians(elev)
         self.r, self.c = _rot(th)
@@ -409,10 +410,10 @@ class Figure:
                 # face direction marker: eye dot and nose tick
                 fwd = v(0, 1, 0)
                 sx = float(fwd @ self.r)
-                if abs(sx) > 0.25 and not self.ghost:
+                if abs(sx) > 0.25 and not self.ghost and self.face:
                     eye = c + np.array([sx * 3.4 * sc, 0.8 * sc])
                     self.ax.add_patch(Circle(eye, 0.65 * sc, fc=K, ec="none", zorder=z + 0.002))
-                elif not self.ghost and float(fwd @ self.c) > 0:
+                elif not self.ghost and self.face and float(fwd @ self.c) > 0:
                     for ex in (-2.2, 2.2):
                         self.ax.add_patch(Circle(c + np.array([ex * sc, 0.8 * sc]), 0.55 * sc, fc=K, ec="none", zorder=z + 0.002))
         # neck drawn under head, over torso
