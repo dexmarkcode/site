@@ -184,15 +184,16 @@ class Figure:
 
     def __init__(self, stance="heiko", view="front", left="hip", right="hip",
                  facing=1, x=0.0, kick=None, lean=0.0, label=None, front_leg="L",
-                 head_turn=0, drop=0.0, partner=False):
+                 head_turn=0, drop=0.0, partner=False, knee=0.0):
         self.stance, self.view, self.left, self.right = stance, view, left, right
         self.facing, self.x, self.kick, self.lean = facing, x, kick, lean
         self.front_leg, self.head_turn, self.drop = front_leg, head_turn, drop
         self.belt = "white" if partner else "black"
+        self.knee_adj = knee
 
     # ---------------------------------------------------------- geometry
     def joints(self):
-        hip_h, ffeet, sfeet = STANCES[self.stance]
+        hip_h, ffeet, sfeet = STANCES[self.stance] if isinstance(self.stance, str) else self.stance
         hip_h -= self.drop
         J = {}
         if self.view == "front":
@@ -209,7 +210,7 @@ class Figure:
                 out = (1 if side == "L" else -1)
                 spread = abs(foot[0] - hip[0])
                 bend = {"shiko": 0.07, "sanchin": -0.025, "seisan": -0.02, "neko": -0.01}.get(self.stance, 0.0)
-                J["knee" + side] = ((hip[0] + foot[0]) / 2 + out * bend + out * spread * 0.05, (hip[1] + foot[1]) / 2 + 0.01)
+                J["knee" + side] = ((hip[0] + foot[0]) / 2 + out * bend + out * spread * 0.05 + out * self.knee_adj, (hip[1] + foot[1]) / 2 + 0.01)
             if self.kick:
                 self._front_kick(J)
             # arms
@@ -270,8 +271,8 @@ class Figure:
         leg = "R" if self.front_leg == "R" else "L"
         hip = J["hip" + leg]
         if k == "knee":
-            J["knee" + leg] = (hip[0], hip[1] + 0.06)
-            J["foot" + leg] = (hip[0], hip[1] - 0.12)
+            J["knee" + leg] = (hip[0] + (0.01 if leg == "L" else -0.01), hip[1] + 0.03)
+            J["foot" + leg] = (hip[0] + (0.035 if leg == "L" else -0.035), hip[1] - 0.2)
         elif k == "mae":
             J["knee" + leg] = (hip[0], hip[1] + 0.05)
             J["foot" + leg] = (hip[0], hip[1] + 0.02)
@@ -464,7 +465,8 @@ def P(*figs, ground=True, extra=None, xlim=None):
         for fg in figs:
             fg.draw(ax)
         if ground:
-            floor(ax, -0.48, 0.48)
+            x0, x1 = ax.get_xlim()
+            floor(ax, x0 + 0.02, x1 - 0.02)
         if extra:
             extra(ax)
     return fn
@@ -570,11 +572,26 @@ def mawashi_frames(n=8):
     return R[:n], L[:n]
 
 
-def D(stance="sanchin", left="hip", right="chudan_tsuki", x=-0.22, **kw):
+def D(stance="sanchin", left="hip", right="chudan_tsuki", x=-0.24, **kw):
     """Defender in side view, facing right, on the left of the panel."""
     return Figure(stance=stance, view="side", left=left, right=right, x=x, facing=1, **kw)
 
 
-def A(stance="sanchin", left="hip", right="chudan_tsuki", x=0.27, **kw):
+def A(stance="sanchin", left="hip", right="chudan_tsuki", x=0.28, **kw):
     """Partner (attacker) in side view, facing left, on the right of the panel; white belt."""
     return Figure(stance=stance, view="side", left=left, right=right, x=x, facing=-1, partner=True, **kw)
+
+
+def feet_panel(feet, title=None, s=0.2, lines=None, arrows_=None, k=1.3, cy=0.32):
+    """feet: list of (x, y, ang, side, style) where style in 'solid','ghost','filled'."""
+    def fn(ax):
+        for x, y, ang, side, *st in feet:
+            style = st[0] if st else "solid"
+            footprint(ax, x * k, y * k + cy, ang, side, s=s, filled=(style == "filled"), ls=(0, (3, 2)) if style == "ghost" else "-")
+        for a, b in (lines or []):
+            ax.plot([a[0] * k, b[0] * k], [a[1] * k + cy, b[1] * k + cy], c="black", lw=0.5, ls=(0, (2, 2)))
+        for a, b, *c in (arrows_ or []):
+            arrow(ax, (a[0] * k, a[1] * k + cy), (b[0] * k, b[1] * k + cy), curve=c[0] if c else 0.0, lw=0.8)
+        if title:
+            label(ax, (0, -0.03), title, size=6.3)
+    return fn

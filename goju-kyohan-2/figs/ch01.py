@@ -38,7 +38,7 @@ plate("fig1_4", [
     P(F("shiko", "hikite", ((-0.02, -0.06), (-0.12, -0.02), "fist", 180), drop=0.03)),
     P(D("sanchin", "hikite", ((0.26, -0.10), -1, "fist", 0)), A("sanchin", "guard", ((0.24, -0.14), -1, "open", -10))),
     P(D("shiko", "grab_pull", "empi"), A("sanchin", "hikite", ((0.22, -0.12), -1, "open", 0))),
-], cols=4)
+], cols=4, panel_w=1.15)
 
 # 1.5 three ways
 plate("fig1_5", [
@@ -50,7 +50,7 @@ plate("fig1_5", [
     P(S("sanchin", "hikite", "chudan_tsuki")),
     P(D("sanchin", "grab_pull", "chamber"), A("sanchin", "hikite", ((0.26, -0.12), -1, "fist", 0))),
     P(D("sanchin", "hikite", ((0.27, -0.06), -1, "fist", 0)), A("sanchin", "guard", "hikite", lean=-0.02)),
-], cols=4)
+], cols=4, panel_w=1.15)
 
 # 1.6 floor patterns
 pats = [
