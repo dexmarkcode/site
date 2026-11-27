@@ -306,6 +306,16 @@ description: "{BOOK['blurb']}"
 
 """
     pre = f'# Copyright {{.unnumbered .unlisted .copyright}}\n\n{copyright_md}\n\n# Dedication {{.unnumbered .unlisted .dedication}}\n\n{dedication_md}\n\n'
+    from PIL import Image
+    small = BUILD / "epubfig"; small.mkdir(exist_ok=True)
+    for f in (ROOT / "figures").glob("*.png"):
+        out = small / f.name
+        if not out.exists() or out.stat().st_mtime < f.stat().st_mtime:
+            im = Image.open(f).convert("L")
+            if im.width > 1400:
+                im = im.resize((1400, round(im.height * 1400 / im.width)), Image.LANCZOS)
+            im.save(out, optimize=True)
+    full = full.replace("](figures/", "](build/epubfig/")
     src = BUILD / "book_epub.md"
     src.write_text(meta + pre + full)
     cmd = ["pandoc", str(src), "-f", "markdown+smart+fenced_divs+bracketed_spans+pipe_tables+grid_tables+superscript+subscript",
@@ -313,6 +323,8 @@ description: "{BOOK['blurb']}"
            "--toc", "--toc-depth=2", "--split-level=2", "--resource-path", str(ROOT),
            "--css", str(ROOT / "style/epub.css"), "--epub-title-page=true"]
     for f in sorted((ROOT / "fonts").glob("*.ttf")):
+        if f.name == "ipag.ttf":
+            continue
         cmd += ["--epub-embed-font", str(f)]
     if (ROOT / "figures/cover.png").exists():
         cmd += ["--epub-cover-image", str(ROOT / "figures/cover.png")]
@@ -320,9 +332,76 @@ description: "{BOOK['blurb']}"
     print("EPUB written")
 
 
+# ------------------------------------------------------------------ DOCX
+def build_docx():
+    from docx import Document
+    from docx.shared import Inches, Pt, RGBColor
+    from docx.enum.section import WD_SECTION
+    from docx.oxml.ns import qn
+    from docx.oxml import OxmlElement
+    ref = BUILD / "reference.docx"
+    with open(ref, "wb") as fh:
+        fh.write(subprocess.run(["pandoc", "--print-default-data-file", "reference.docx"], capture_output=True, check=True).stdout)
+    d = Document(ref)
+    for st in d.styles:
+        try:
+            f = st.font
+        except Exception:
+            continue
+        if f is None:
+            continue
+        f.color.rgb = RGBColor(0, 0, 0)
+        name = st.name
+        if name.startswith("Heading") or name in ("Title", "Subtitle"):
+            f.name = "Arial"
+        else:
+            f.name = "Georgia"
+    sizes = {"Normal": 10.5, "Body Text": 10.5, "First Paragraph": 10.5, "Compact": 10.5, "Heading 1": 22, "Heading 2": 18, "Heading 3": 13, "Heading 4": 11.5, "Title": 28, "Subtitle": 14}
+    byname = {st.name: st for st in d.styles}
+    for k, v in sizes.items():
+        if k in byname:
+            byname[k].font.size = Pt(v)
+    for k in ("Heading 1", "Heading 2"):
+        byname[k].paragraph_format.page_break_before = True
+    d.save(ref)
+    src = BUILD / "book_epub.md"
+    out = OUT / (BOOK["file"] + ".docx")
+    subprocess.run(["pandoc", str(src), "-f", "markdown+smart+fenced_divs+bracketed_spans+pipe_tables+grid_tables",
+                    "-t", "docx", "-o", str(out), "--reference-doc", str(ref), "--resource-path", str(ROOT),
+                    "--toc", "--toc-depth=2", "--dpi=300"], check=True, cwd=ROOT)
+    d = Document(out)
+    for s in d.sections:
+        s.page_width, s.page_height = Inches(6), Inches(9)
+        s.top_margin = s.bottom_margin = Inches(0.8)
+        s.left_margin, s.right_margin = Inches(0.85), Inches(0.6)
+        s.gutter = Inches(0)
+        p = s.footer.paragraphs[0] if s.footer.paragraphs else s.footer.add_paragraph()
+        p.alignment = 1
+        r = p.add_run()
+        for t, txt in (("begin", None), (None, "PAGE"), ("end", None)):
+            if t:
+                e = OxmlElement("w:fldChar"); e.set(qn("w:fldCharType"), t); r._r.append(e)
+            else:
+                e = OxmlElement("w:instrText"); e.set(qn("xml:space"), "preserve"); e.text = txt; r._r.append(e)
+    sp = d.settings.element
+    mm = OxmlElement("w:mirrorMargins"); sp.append(mm)
+    # keep images inside the 4.55 in text block
+    for shp in d.inline_shapes:
+        if shp.width > Inches(4.55):
+            ratio = Inches(4.55) / shp.width
+            shp.width = Inches(4.55); shp.height = int(shp.height * ratio)
+        if shp.height > Inches(6.9):
+            ratio = Inches(6.9) / shp.height
+            shp.height = Inches(6.9); shp.width = int(shp.width * ratio)
+    d.save(out)
+    print("DOCX written", len(d.inline_shapes), "images")
+
+
 if __name__ == "__main__":
     what = sys.argv[1] if len(sys.argv) > 1 else "all"
     if what in ("pdf", "all"):
         build_pdf()
-    if what in ("epub", "all"):
+    if what in ("epub", "all", "docx"):
         build_epub()
+    if what in ("docx", "all"):
+        build_docx()
