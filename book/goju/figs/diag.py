@@ -246,8 +246,8 @@ def torso_schematic(ax, mode="neutral", label=True, dian=True, arrows=None):
     """Front-on schematic torso outline with diaphragm, pelvic floor and dantien."""
     outline = [(-16, -38), (-20, -30), (-18, -10), (-16, 5), (-19, 20), (-24, 30), (-26, 36), (-10, 40), (-6, 46), (6, 46), (10, 40),
                (26, 36), (24, 30), (19, 20), (16, 5), (18, -10), (20, -30), (16, -38)]
+    ax.add_patch(Ellipse((0, 50), 13, 15, fc="white", ec=INK, lw=0.9))
     ax.add_patch(Polygon(outline, closed=True, fc="white", ec=INK, lw=0.9))
-    ax.add_patch(Ellipse((0, 54), 14, 17, fc="white", ec=INK, lw=0.9))
     dy = {"neutral": 0, "in": -5, "out": 4, "reverse": 3}[mode]
     th = np.linspace(math.pi, 0, 40)
     ax.plot(15 * np.cos(th), 6 + dy + 7 * np.sin(th) * (0.7 if mode == "in" else 1), color=INK, lw=1.2)
