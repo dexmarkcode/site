@@ -23,10 +23,10 @@ def cell(ax, x, y, w, h, mv):
     ground(ax, x + 4, x + w - 4, gy)
     figure(ax, x + w / 2 - (3 if STANCES[st]["view"] == "side" else 0), gy, st, L=mv["L"], R=mv["R"], s=2.55)
     txt = mv["txt"]
-    lines = textwrap.wrap(txt, 40)[:2]
-    label(ax, x + w / 2, y + 7.6 if len(lines) > 1 else y + 6.4, "\n".join(lines), fs=6.0, linespacing=1.1)
+    lines = textwrap.wrap(txt, 36)[:2]
+    label(ax, x + w / 2, y + 7.6 if len(lines) > 1 else y + 6.4, "\n".join(lines), fs=6.7, linespacing=1.08)
     if mv["note"]:
-        label(ax, x + w / 2, y + 1.9, mv["note"], fs=5.3, c=DARK, style="italic")
+        label(ax, x + w / 2, y + 1.9, mv["note"], fs=5.9, c=DARK, style="italic")
 
 
 def strips(key):

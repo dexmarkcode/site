@@ -343,7 +343,7 @@ def part_openers():
     for i, (st, l, r) in enumerate(poses, 1):
         fig, ax = canvas(w=4.5, h=2.6, ylim=(0, 57.8))
         ax.plot([5, 95], [6, 6], color=INK, lw=1.2)
-        figure(ax, 50, 6, st, L=l, R=r, s=5.7)
+        figure(ax, 50, 6, st, L=l, R=r, s=4.6)
         for k in range(5):
             ax.add_patch(Circle((50, 30), 24 + k * 6, fc="none", ec=PALE, lw=0.8, zorder=0))
         save(fig, f"part{i}")

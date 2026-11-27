@@ -35,6 +35,7 @@ def kata_tokens(md, chapter_no):
             out.append(f"![**{name}, sequence {i}.** Counts {a} to {b}. Read left to right, top to bottom. "
                        f"The arrow in each panel shows the direction the chest faces on the floor (north is the front of the dojo).]"
                        f"(figures/{fn}.png){{.seq}}\n")
+        out.append('\n<div class="pb"></div>\n')
         out.append(f"\nTable: **{name}: complete count sheet.** Use this as your checklist when you practise from memory.\n")
         out.append("| Count | Faces | Stance and technique | Coaching cue |")
         out.append("|:--|:--|:----------------|:--------|")
@@ -211,7 +212,7 @@ def build_pdf():
         back_html.append(f'<section class="backmatter {cls}" id="{bid}"><h1 class="front-title">{html.escape(title)}</h1>{body}</section>')
         toc.append(f'<li class="tfront"><a href="#{bid}">{html.escape(title)}</a></li>')
 
-    cover = '<section class="cover"><img src="figures/cover.png" /></section>' if (ROOT / "figures/cover.png").exists() else ""
+    cover = ""  # KDP: the cover is supplied separately, never inside the interior file
     titlepage = (f'<section class="titlepage"><div class="t0">Gōjū-ryū</div><div class="t1">Karate Kata<br/>Bible</div>'
                  f'<div class="t2">{html.escape(SUBTITLE)}</div><div class="bolt"></div>'
                  f'<div class="auth">{html.escape(AUTHOR)}</div><div class="ed">First Edition</div></section>')
@@ -326,9 +327,26 @@ def make_reference_docx():
             continue
         name = st.name
         if name.startswith("Heading") or name in ("Title", "Subtitle"):
-            f.name = "EB Garamond"; f.color.rgb = black
+            f.name = "Garamond"; f.color.rgb = black
         elif name in ("Normal", "Body Text", "First Paragraph", "Compact", "Block Text", "Caption", "Image Caption", "Table Caption"):
-            f.name = "EB Garamond"; f.color.rgb = black
+            f.name = "Garamond"; f.color.rgb = black
+    from docx.oxml.ns import qn
+    for st in d.styles.element.iter(qn("w:style")):
+        for rf in st.iter(qn("w:rFonts")):
+            for a in ("w:asciiTheme", "w:hAnsiTheme", "w:eastAsiaTheme", "w:cstheme"):
+                rf.attrib.pop(qn(a), None)
+            sid = st.get(qn("w:styleId")) or ""
+            face = "Garamond"
+            rf.set(qn("w:ascii"), face); rf.set(qn("w:hAnsi"), face); rf.set(qn("w:cs"), face)
+        for c in st.iter(qn("w:color")):
+            c.set(qn("w:val"), "000000")
+            for a in ("w:themeColor", "w:themeShade", "w:themeTint"):
+                c.attrib.pop(qn(a), None)
+    # document defaults
+    for rf in d.styles.element.iter(qn("w:rFonts")):
+        for a in ("w:asciiTheme", "w:hAnsiTheme", "w:eastAsiaTheme", "w:cstheme"):
+            rf.attrib.pop(qn(a), None)
+        rf.set(qn("w:ascii"), "Garamond"); rf.set(qn("w:hAnsi"), "Garamond")
     sizes = {"Normal": 11, "Body Text": 11, "First Paragraph": 11, "Heading 1": 22, "Heading 2": 17, "Heading 3": 13.5,
              "Heading 4": 12, "Title": 26, "Subtitle": 14, "Image Caption": 9, "Table Caption": 9, "Compact": 10}
     for k, v in sizes.items():

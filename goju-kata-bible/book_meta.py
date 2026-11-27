@@ -32,6 +32,7 @@ BOOK = {
     "back": [
         {"file": "appendix-a.md"},
         {"file": "appendix-b.md"},
+        {"file": "appendix-c.md"},
         {"file": "glossary.md", "cls": "glossary"},
         {"file": "reading.md"},
         {"file": "about.md"},

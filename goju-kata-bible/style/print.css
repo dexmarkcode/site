@@ -235,8 +235,9 @@ hr { border: 0; border-top: 0.6pt solid var(--rule); margin: 14pt 30%; }
 .about p { margin-bottom: 0; }
 a { color: inherit; text-decoration: none; }
 
-figure img.seq { max-height: 6.75in; }
-figure:has(img.seq) { break-before: auto; }
+figure img.seq { max-height: 6.2in; width: auto; }
+figure:has(img.seq) { margin: 4pt 0 0 0; }
+
 .part .pintro { color: #222; }
 table td:first-child { white-space: nowrap; font-weight: 600; }
 .tip { margin: 12pt 0; padding: 8pt 12pt; border: 0.8pt solid #000; font-size: 10.2pt; }
@@ -246,3 +247,6 @@ table td:first-child { white-space: nowrap; font-weight: 600; }
 .grading p { text-indent: 0; line-height: 1.4; }
 .grading > p:first-child strong:first-child { display: block; font: 700 8.6pt "Sans"; letter-spacing: 0.9pt; text-transform: uppercase; margin-bottom: 4pt; }
 .grading li { line-height: 1.38; }
+
+.pb { break-before: page; height: 0; }
+caption { break-after: avoid; }
