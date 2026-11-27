@@ -333,3 +333,50 @@ def front_body(ax, cx=0.0, scale=1.0, fill="white", z=5):
             P(0.33, 1.05), P(0.24, 1.42), P(0.2, 1.5), P(0.05, 1.55)]
     ax.add_patch(Polygon(body, closed=True, fc=fill, ec="black", lw=1.2, zorder=z, joinstyle="round"))
     ax.plot([cx - 0.19 * s, cx + 0.19 * s], [0.86 * s, 0.86 * s], color="black", lw=0.8, zorder=z + 1)
+
+
+# ------------------------------------------------------------------ top-down people
+def top_person(ax, x, y, ang, style="A", lhand=None, rhand=None, z=10, s=1.0):
+    """Bird's-eye body: shoulders ellipse, head, arms to given hand points. ang = facing direction (deg)."""
+    a = math.radians(ang)
+    fx, fy = math.cos(a), math.sin(a)
+    lx, ly = -fy, fx   # left side unit vector
+    fill = "black" if style == "A" else "white"
+    sw = 0.24 * s
+    Ls = (x + lx * sw, y + ly * sw)
+    Rs = (x - lx * sw, y - ly * sw)
+    lhand = lhand or (x + lx * 0.18 + fx * 0.38, y + ly * 0.18 + fy * 0.38)
+    rhand = rhand or (x - lx * 0.18 + fx * 0.38, y - ly * 0.18 + fy * 0.38)
+    for sh, h in ((Ls, lhand), (Rs, rhand)):
+        if style == "A":
+            ax.plot([sh[0], h[0]], [sh[1], h[1]], color="black", lw=4.5, solid_capstyle="round", zorder=z)
+        else:
+            ax.plot([sh[0], h[0]], [sh[1], h[1]], color="black", lw=4.5, solid_capstyle="round", zorder=z)
+            ax.plot([sh[0], h[0]], [sh[1], h[1]], color="white", lw=2.3, solid_capstyle="round", zorder=z + 0.1)
+        ax.add_patch(Circle(h, 0.045 * s, fc=fill, ec="black", lw=1, zorder=z + 0.2))
+    ax.add_patch(Ellipse((x, y), 0.6 * s, 0.24 * s, angle=ang + 90, fc=fill, ec="black", lw=1.1, zorder=z + 0.3))
+    ax.add_patch(Circle((x + fx * 0.02, y + fy * 0.02), 0.09 * s, fc="white" if style == "A" else "#dddddd", ec="black", lw=1.1, zorder=z + 0.4))
+    # nose tick showing facing
+    ax.plot([x + fx * 0.09, x + fx * 0.14], [y + fy * 0.09, y + fy * 0.14], color="black", lw=1.4, zorder=z + 0.5)
+
+
+def plan_panels(name, panels, cols=None, width=4.5, lim=1.0, titles=True):
+    n = len(panels)
+    cols = cols or n
+    rows = math.ceil(n / cols)
+    pw = width / cols
+    cap = 0.22 if titles else 0
+    fig = plt.figure(figsize=(width, rows * (pw + cap)))
+    H = rows * (pw + cap)
+    for i, fn in enumerate(panels):
+        r, c = divmod(i, cols)
+        left = c * pw / width + 0.006
+        bottom = 1 - ((r + 1) * (pw + cap)) / H + cap / H
+        ax = plan_axes(fig, [left, bottom, pw / width - 0.012, pw / H - 0.01], lim)
+        fn(ax)
+        t = getattr(fn, "title", None)
+        if titles and t:
+            fig.text(left + (pw / width - 0.012) / 2, bottom - 0.01, t, ha="center", va="top", fontsize=7)
+        if n > 1:
+            ax.text(-lim + 0.06 * lim, lim - 0.06 * lim, chr(65 + i), fontsize=9, fontweight="bold", va="top")
+    save(fig, name)
