@@ -184,12 +184,13 @@ class Figure:
 
     def __init__(self, stance="heiko", view="front", left="hip", right="hip",
                  facing=1, x=0.0, kick=None, lean=0.0, label=None, front_leg="L",
-                 head_turn=0, drop=0.0, partner=False, knee=0.0):
+                 head_turn=0, drop=0.0, partner=False, knee=0.0, back=False):
         self.stance, self.view, self.left, self.right = stance, view, left, right
         self.facing, self.x, self.kick, self.lean = facing, x, kick, lean
         self.front_leg, self.head_turn, self.drop = front_leg, head_turn, drop
         self.belt = "white" if partner else "black"
         self.knee_adj = knee
+        self.back = back
 
     # ---------------------------------------------------------- geometry
     def joints(self):
@@ -377,7 +378,10 @@ class Figure:
     def _head(self, ax, c, front=True, f=1):
         ax.add_patch(Ellipse(c, HEAD_R * 1.75, HEAD_R * 2.1, fc="white", ec="black", lw=LW, zorder=3))
         # hair line
-        if front:
+        if front and self.back:
+            th = [math.radians(a) for a in range(200, -21, -10)]
+            ax.add_patch(MPoly([(c[0] + HEAD_R * 0.86 * math.cos(t), c[1] + HEAD_R * 1.04 * math.sin(t)) for t in th], closed=True, fc="black", ec="black", lw=0.5, zorder=4))
+        elif front:
             ax.plot([c[0] - HEAD_R * 0.8, c[0] - HEAD_R * 0.3, c[0] + HEAD_R * 0.3, c[0] + HEAD_R * 0.8],
                     [c[1] + HEAD_R * 0.45, c[1] + HEAD_R * 0.7, c[1] + HEAD_R * 0.7, c[1] + HEAD_R * 0.45], c="black", lw=LW * 0.8, zorder=4)
         else:
@@ -389,6 +393,12 @@ class Figure:
     def _gi_front(self, ax, J):
         nk = J["neck"]
         hipy = J["hipL"][1]
+        if self.back:
+            bx0, bx1 = J["hipR"][0] - 0.03, J["hipL"][0] + 0.03
+            by = hipy + 0.015
+            ax.add_patch(MPoly([(bx0, by), (bx1, by), (bx1, by - 0.022), (bx0, by - 0.022)], fc=self.belt, ec="black", lw=LW * 0.9, zorder=3))
+            ax.plot([nk[0], nk[0]], [nk[1] - 0.04, hipy + 0.03], c="black", lw=LW * 0.4, zorder=3)
+            return
         # lapels
         ax.plot([nk[0] - 0.035, nk[0] + 0.012, nk[0] + 0.03], [nk[1] - 0.005, hipy + 0.02, hipy + 0.02], c="black", lw=LW * 0.8, zorder=3)
         ax.plot([nk[0] + 0.035, nk[0] + 0.004], [nk[1] - 0.005, hipy + 0.11], c="black", lw=LW * 0.8, zorder=3)
@@ -417,7 +427,7 @@ class Figure:
 
 # ---------------------------------------------------------------- annotation
 def arrow(ax, a, b, curve=0.0, lw=0.9, style="-|>", ls="-"):
-    p = FancyArrowPatch(a, b, connectionstyle=f"arc3,rad={curve}", arrowstyle=style, mutation_scale=7,
+    p = FancyArrowPatch(a, b, connectionstyle=f"arc3,rad={curve}", arrowstyle=style, mutation_scale=5,
                         lw=lw, color="black", zorder=6, linestyle=ls)
     ax.add_patch(p)
 
@@ -594,4 +604,17 @@ def feet_panel(feet, title=None, s=0.2, lines=None, arrows_=None, k=1.3, cy=0.32
             arrow(ax, (a[0] * k, a[1] * k + cy), (b[0] * k, b[1] * k + cy), curve=c[0] if c else 0.0, lw=0.8)
         if title:
             label(ax, (0, -0.03), title, size=6.3)
+    return fn
+
+
+def marked(fig, marks, ground=True):
+    """marks: list of (joint_key, (dx,dy) offset of arrow tail from joint, (dx,dy) of head offset)."""
+    def fn(ax):
+        J = fig.draw(ax)
+        if ground:
+            x0, x1 = ax.get_xlim()
+            floor(ax, x0 + 0.02, x1 - 0.02)
+        for key, t, h in marks:
+            p = J[key]
+            arrow(ax, (p[0] + t[0], p[1] + t[1]), (p[0] + h[0], p[1] + h[1]), lw=1.0)
     return fn
