@@ -618,3 +618,38 @@ def marked(fig, marks, ground=True):
             p = J[key]
             arrow(ax, (p[0] + t[0], p[1] + t[1]), (p[0] + h[0], p[1] + h[1]), lw=1.0)
     return fn
+
+
+def hand_panel(kind, ang, fore_ang=None, title=None, s=3.4):
+    """A large close-up drawing of one hand with forearm."""
+    def fn(ax):
+        fa = math.radians(fore_ang if fore_ang is not None else ang)
+        a = math.radians(ang)
+        wrist = (0.06 - 0.10 * math.cos(fa), 0.30 - 0.06 * math.sin(fa))
+        elbow = (wrist[0] - 0.26 * math.cos(fa), wrist[1] - 0.26 * math.sin(fa))
+        sleeve_end = (wrist[0] - 0.12 * math.cos(fa), wrist[1] - 0.12 * math.sin(fa))
+        fore = capsule(elbow, wrist, 0.05, 0.042)
+        sleeve = capsule((elbow[0] - 0.02 * math.cos(fa), elbow[1] - 0.02 * math.sin(fa)), sleeve_end, 0.072, 0.066)
+        hand = hand_shape(wrist, a, kind, scale=s)
+        for g in (fore, hand, sleeve):
+            geoms = g.geoms if isinstance(g, MultiPolygon) else [g]
+            for gg in geoms:
+                ax.add_patch(MPoly(list(gg.exterior.coords), closed=True, fc="white", ec="black", lw=1.0, zorder=3))
+        c_, s_ = math.cos(a), math.sin(a)
+        def T(px, py):
+            return (wrist[0] + (px * c_ - py * s_) * s, wrist[1] + (px * s_ + py * c_) * s)
+        if kind == "fist":
+            for t in (-0.012, 0.001, 0.014):
+                p1, p2 = T(0.026, t), T(0.044, t)
+                ax.plot([p1[0], p2[0]], [p1[1], p2[1]], c="black", lw=0.7, zorder=4)
+        if kind in ("open", "nukite", "shuto"):
+            for t in (-0.008, 0.0, 0.008):
+                p1, p2 = T(0.045, t), T(0.072, t * 0.6)
+                ax.plot([p1[0], p2[0]], [p1[1], p2[1]], c="black", lw=0.6, zorder=4)
+        if kind == "palm":
+            for t in (0.012, 0.022, 0.032):
+                p1, p2 = T(0.008 + t * 0.4, t), T(0.03 + t * 0.2, t + 0.012)
+                ax.plot([p1[0], p2[0]], [p1[1], p2[1]], c="black", lw=0.6, zorder=4)
+        if title:
+            label(ax, (0, -0.03), title, size=6.3)
+    return fn
