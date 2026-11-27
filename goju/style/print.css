@@ -1,0 +1,194 @@
+/* Goju-Ryu Karate Close-Combat Masterclass: print stylesheet (WeasyPrint)
+   Trim 6 x 9 in, single column, black and white only. */
+
+@font-face { font-family: "Garamond"; src: url(../fonts/EBGaramond-Regular.ttf); font-weight: 400; font-style: normal; }
+@font-face { font-family: "Garamond"; src: url(../fonts/EBGaramond-SemiBold.ttf); font-weight: 600; font-style: normal; }
+@font-face { font-family: "Garamond"; src: url(../fonts/EBGaramond-Bold.ttf); font-weight: 700; font-style: normal; }
+@font-face { font-family: "Garamond"; src: url(../fonts/EBGaramond-Italic.ttf); font-weight: 400; font-style: italic; }
+@font-face { font-family: "Garamond"; src: url(../fonts/EBGaramond-BoldItalic.ttf); font-weight: 700; font-style: italic; }
+@font-face { font-family: "Sans"; src: url(../fonts/SourceSans3-Light.ttf); font-weight: 300; }
+@font-face { font-family: "Sans"; src: url(../fonts/SourceSans3-Regular.ttf); font-weight: 400; font-style: normal; }
+@font-face { font-family: "Sans"; src: url(../fonts/SourceSans3-Italic.ttf); font-weight: 400; font-style: italic; }
+@font-face { font-family: "Sans"; src: url(../fonts/SourceSans3-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: "Sans"; src: url(../fonts/SourceSans3-Bold.ttf); font-weight: 700; }
+
+:root { --ink: #000; --grey: #555; --rule: #000; --tint: #efefef; }
+
+/* KDP 6x9: inside (gutter) margin 0.875in for 300+ pages, outside 0.6in */
+@page {
+  size: 6in 9in;
+  margin: 0.8in 0.6in 0.8in 0.875in;
+}
+@page :left {
+  margin-left: 0.6in; margin-right: 0.875in;
+  @top-left { content: counter(page); font: 600 8.5pt "Sans"; color: #000; vertical-align: bottom; padding-bottom: 7pt; }
+  @top-center { content: "GOJU-RYU KARATE CLOSE-COMBAT MASTERCLASS"; font: 400 6.8pt "Sans"; letter-spacing: 1.4pt; color: #000; vertical-align: bottom; padding-bottom: 7pt; }
+}
+@page :right {
+  margin-left: 0.875in; margin-right: 0.6in;
+  @top-right { content: counter(page); font: 600 8.5pt "Sans"; color: #000; vertical-align: bottom; padding-bottom: 7pt; }
+  @top-center { content: string(chaptitle); font: italic 400 8.8pt "Garamond"; color: #000; vertical-align: bottom; padding-bottom: 7pt; }
+}
+@page :blank { @top-left { content: none; } @top-right { content: none; } @top-center { content: none; } }
+
+@page front {
+  @top-left { content: none; } @top-right { content: none; } @top-center { content: none; }
+  @bottom-center { content: counter(page, lower-roman); font: 400 8.5pt "Sans"; color: #000; }
+}
+@page front:blank { @bottom-center { content: none; } }
+@page titlepage { @top-left { content: none; } @top-right { content: none; } @top-center { content: none; } @bottom-center { content: none; } }
+@page part {
+  @top-left { content: none; } @top-right { content: none; } @top-center { content: none; }
+}
+@page partfirst {
+  counter-reset: page 1;
+  @top-left { content: none; } @top-right { content: none; } @top-center { content: none; }
+}
+@page chapter:first {
+  @top-left { content: none; } @top-right { content: none; } @top-center { content: none; }
+  @bottom-center { content: counter(page); font: 600 8.5pt "Sans"; color: #000; }
+}
+
+html { font-family: "Garamond", serif; font-size: 11.6pt; color: #000; }
+body { margin: 0; }
+p {
+  margin: 0; line-height: 1.45; text-align: justify; hyphens: auto;
+  text-indent: 1.3em; orphans: 2; widows: 2;
+}
+:lang(en-GB) { hyphenate-limit-chars: 6 3 3; }
+h2 + p, h3 + p, h4 + p, figure + p, .drill + p, .problem + p, .kata + p, .street + p, .fault + p,
+table + p, ul + p, ol + p, blockquote + p, .chapter-intro + p, .firstpara,
+div > p:first-child { text-indent: 0; }
+
+em { font-style: italic; }
+strong { font-weight: 700; }
+
+/* headings */
+h2 {
+  font: 700 13pt/1.22 "Sans"; color: #000; margin: 24pt 0 8pt 0;
+  break-after: avoid; letter-spacing: 0.1pt; text-transform: none;
+}
+h2 .secnum { margin-right: 7pt; font-weight: 300; }
+h3 { font: 600 11pt/1.25 "Sans"; margin: 15pt 0 5pt 0; break-after: avoid; }
+h4 { font: italic 700 11.4pt/1.3 "Garamond"; margin: 10pt 0 3pt 0; break-after: avoid; }
+
+/* title page */
+.titlepage { page: titlepage; break-before: right; break-after: page; text-align: center; padding-top: 0.9in; }
+.titlepage .kanji { font: 400 12pt "Sans"; letter-spacing: 6pt; text-transform: uppercase; margin-bottom: 18pt; }
+.titlepage .t1 { font: 700 27pt/1.1 "Garamond"; letter-spacing: 0.4pt; }
+.titlepage .t1b { font: 400 15pt/1.2 "Sans"; letter-spacing: 4pt; text-transform: uppercase; margin-top: 10pt; }
+.titlepage .t2 { font: italic 400 12pt/1.42 "Garamond"; margin-top: 18pt; padding: 0 0.2in; }
+.titlepage .rule { margin: 26pt auto; width: 1.2in; border-top: 1.5pt solid #000; }
+.titlepage .auth { font: 600 16pt "Garamond"; letter-spacing: 1.5pt; margin-top: 1.1in; font-variant: small-caps; }
+.halftitle { page: titlepage; break-after: page; text-align: center; padding-top: 2.4in; font: 600 17pt/1.25 "Garamond"; }
+
+.front { page: front; }
+.front-page { break-before: right; }
+.copyright { break-before: left; page: front; font-size: 8.6pt; padding-top: 2.6in; }
+.copyright p { text-indent: 0; text-align: left; margin-bottom: 6pt; line-height: 1.38; }
+.disclaimer { break-before: right; page: front; }
+.dedication { break-before: right; page: front; text-align: center; padding-top: 2.4in; font-style: italic; font-size: 12.5pt; }
+.dedication p { text-align: center; text-indent: 0; }
+.front-title {
+  font: 600 21pt "Garamond"; margin: 0.45in 0 22pt 0; letter-spacing: 0.3pt; text-align: center;
+  border-bottom: 0.8pt solid #000; padding-bottom: 10pt; string-set: chaptitle content();
+}
+
+/* contents */
+.toc { page: front; break-before: right; }
+.toc ul { list-style: none; padding: 0; margin: 0; }
+.toc li { margin: 0; }
+.toc a { color: inherit; text-decoration: none; }
+.toc .tpart { font: 700 8.6pt "Sans"; letter-spacing: 1.6pt; margin-top: 13pt; text-transform: uppercase; }
+.toc .tpart a::after { content: leader(" ") target-counter(attr(href), page); }
+.toc .tch { font: 400 11pt/1.35 "Garamond"; margin-top: 4pt; }
+.toc .tch .n { display: inline-block; width: 1.6em; font-weight: 700; }
+.toc .tch a::after { content: leader(".") "\2002" target-counter(attr(href), page); }
+.toc .tfront { font: italic 400 11pt/1.35 "Garamond"; margin-top: 4pt; }
+.toc .tfront.rom a::after { content: leader(".") "\2002" target-counter(attr(href), page, lower-roman); }
+.toc .tfront:not(.rom) a::after { content: leader(".") "\2002" target-counter(attr(href), page); }
+
+/* part opener: white page, heavy black type */
+.part {
+  page: part; break-before: right; break-after: right;
+  height: 7.3in; box-sizing: border-box; position: relative; padding-top: 0.6in; text-align: center;
+}
+.part .pnum { font: 600 10pt "Sans"; letter-spacing: 6pt; text-transform: uppercase; }
+.part .pbig { font: 300 64pt/1 "Sans"; margin: 6pt 0 4pt 0; }
+.part .pbar { width: 0.8in; border-top: 2pt solid #000; margin: 12pt auto 16pt auto; }
+.part .ptitle { font: 700 24pt/1.15 "Garamond"; string-set: chaptitle content(); margin: 0; }
+.part .pintro { margin-top: 22pt; font: italic 400 11.4pt/1.5 "Garamond"; text-align: left; }
+.part .pintro p { text-indent: 0; text-align: left; margin-bottom: 8pt; }
+.part .pchaps { margin-top: 22pt; font: 400 9.6pt/1.8 "Sans"; text-align: left; border-top: 0.6pt solid #000; padding-top: 10pt; }
+.part .pchaps span { font-weight: 700; margin-right: 9pt; }
+
+/* chapter opener */
+.chapter { page: chapter; break-before: right; }
+.chap-head { padding-top: 0.25in; margin-bottom: 20pt; text-align: center; }
+.chap-head .clabel { font: 600 8.6pt "Sans"; letter-spacing: 4pt; text-transform: uppercase; }
+.chap-head .cnum { font: 300 52pt/1 "Sans"; margin-top: 4pt; }
+.chap-head .ctitle { font: 700 21pt/1.15 "Garamond"; margin-top: 10pt; string-set: chaptitle content(); }
+.chap-head .crule { width: 1in; border-top: 1.2pt solid #000; margin: 14pt auto 0 auto; }
+.chapter-intro { font: italic 400 11.4pt/1.47 "Garamond"; margin: 0 0 16pt 0; }
+.chapter-intro p { text-indent: 0; }
+.dropcap::first-letter {
+  float: left; font: 700 44pt/0.8 "Garamond"; padding: 5pt 5pt 0 0; margin-top: 1pt;
+}
+.lead { font-variant: small-caps; letter-spacing: 0.4pt; }
+
+/* figures */
+figure { margin: 14pt 0; text-align: center; break-inside: avoid; }
+figure img { max-width: 100%; max-height: 5.4in; }
+figcaption {
+  font: 400 8.6pt/1.38 "Sans"; text-align: left; margin-top: 6pt;
+  padding-top: 5pt; border-top: 0.5pt solid #000;
+}
+figcaption strong { font-weight: 700; }
+
+/* boxes (black and white) */
+.drill, .problem, .kata, .street, .fault, .keypoints, .exercises {
+  margin: 13pt 0; padding: 9pt 12pt 10pt 12pt; font-size: 10.6pt;
+}
+.drill p, .problem p, .kata p, .street p, .fault p, .keypoints p { line-height: 1.4; text-indent: 0; }
+.drill p + p, .problem p + p, .kata p + p, .street p + p, .fault p + p { margin-top: 5pt; }
+.drill > p:first-child strong:first-child, .problem > p:first-child strong:first-child,
+.kata > p:first-child strong:first-child, .street > p:first-child strong:first-child, .fault > p:first-child strong:first-child {
+  display: block; font: 700 8.8pt "Sans"; letter-spacing: 1pt; text-transform: uppercase; margin-bottom: 4pt;
+}
+.drill { border: 0.8pt solid #000; border-left: 4pt solid #000; break-inside: auto; }
+.problem { border-top: 2pt solid #000; border-bottom: 2pt solid #000; padding-left: 2pt; padding-right: 2pt; break-inside: auto; }
+.problem p strong { font-weight: 700; }
+.kata { background: var(--tint); border-left: 2pt solid #000; }
+.street { border: 0.8pt dashed #000; }
+.fault { border: 0.8pt solid #000; border-top: 4pt solid #000; }
+.keypoints { border: 1.4pt solid #000; break-inside: auto; }
+.keypoints h3 { margin-top: 2pt; text-transform: uppercase; letter-spacing: 1.4pt; font-size: 9.5pt; }
+.keypoints li { margin-bottom: 3pt; line-height: 1.4; }
+.exercises { border-top: 1.4pt solid #000; padding-left: 0; padding-right: 0; }
+.exercises h3 { text-transform: uppercase; letter-spacing: 1.4pt; font-size: 9.5pt; }
+.exercises ol li { margin-bottom: 5pt; line-height: 1.4; text-align: justify; }
+.drill ul, .drill ol, .problem ul, .problem ol, .fault ul, .fault ol { margin: 4pt 0 2pt 0; padding-left: 16pt; }
+
+ul, ol { margin: 6pt 0 8pt 0; padding-left: 18pt; }
+li { line-height: 1.43; margin-bottom: 2.5pt; }
+li p { text-indent: 0; }
+
+blockquote { margin: 10pt 20pt; font-style: italic; }
+blockquote p { text-indent: 0; }
+
+table { width: 100%; border-collapse: collapse; margin: 12pt 0 14pt 0; font: 400 8.6pt/1.32 "Sans"; }
+thead { display: table-header-group; }
+caption { caption-side: top; text-align: left; font: 400 8.6pt/1.35 "Sans"; padding-bottom: 5pt; }
+th { font-weight: 700; text-align: left; border-top: 1.2pt solid #000; border-bottom: 0.6pt solid #000; padding: 4pt; vertical-align: bottom; }
+td { padding: 3.2pt 4pt; border-bottom: 0.3pt solid #999; vertical-align: top; }
+tbody tr:last-child td { border-bottom: 1.2pt solid #000; }
+tr { break-inside: avoid; }
+hr { border: 0; border-top: 0.6pt solid #000; margin: 14pt 30%; }
+
+.backmatter { page: chapter; break-before: right; }
+.glossary dt { font: 700 10pt "Sans"; margin-top: 6pt; break-after: avoid; }
+.glossary dd { margin: 1pt 0 0 0; font-size: 10.8pt; line-height: 1.4; }
+.glossary dd p { text-indent: 0; }
+.programme table { font-size: 8.4pt; }
+.about p { margin-bottom: 0; }
+a { color: inherit; text-decoration: none; }

@@ -1,0 +1,37 @@
+@font-face { font-family: "EB Garamond"; src: url(../fonts/EBGaramond-Regular.ttf); font-weight: normal; font-style: normal; }
+@font-face { font-family: "EB Garamond"; src: url(../fonts/EBGaramond-Italic.ttf); font-weight: normal; font-style: italic; }
+@font-face { font-family: "EB Garamond"; src: url(../fonts/EBGaramond-Bold.ttf); font-weight: bold; font-style: normal; }
+@font-face { font-family: "Source Sans 3"; src: url(../fonts/SourceSans3-Regular.ttf); font-weight: normal; }
+@font-face { font-family: "Source Sans 3"; src: url(../fonts/SourceSans3-Bold.ttf); font-weight: bold; }
+body { font-family: "EB Garamond", Georgia, serif; line-height: 1.5; color: #000; margin: 0 4%; }
+p { margin: 0; text-indent: 1.3em; text-align: justify; }
+h1 + p, h2 + p, h3 + p, h4 + p, div + p, figure + p, ul + p, ol + p, div > p:first-child, li p { text-indent: 0; }
+h1, h2, h3, h4 { font-family: "Source Sans 3", Helvetica, sans-serif; color: #000; line-height: 1.2; }
+h1 { font-size: 1.7em; margin: 2.5em 0 1em 0; text-align: center; page-break-before: always; }
+h1.part { font-size: 1.9em; margin-top: 30%; border-bottom: 2px solid #000; padding-bottom: 0.4em; }
+h2 { font-size: 1.45em; margin: 1.6em 0 1em 0; page-break-before: always; text-align: center; }
+h3 { font-size: 1.15em; margin: 1.5em 0 0.5em 0; }
+h4 { font-size: 1em; margin: 1.2em 0 0.4em 0; }
+h5 { font-family: "EB Garamond", serif; font-style: italic; font-size: 1em; }
+.secnum { margin-right: 0.35em; font-weight: normal; }
+.part-intro, .chapter-intro { font-style: italic; margin: 1.2em 0; }
+.part-intro p, .chapter-intro p { text-indent: 0; margin-bottom: 0.6em; }
+figure { margin: 1.3em 0; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; }
+figcaption { font-family: "Source Sans 3", sans-serif; font-size: 0.8em; text-align: left; margin-top: 0.4em; }
+.drill, .problem, .kata, .street, .fault, .keypoints, .exercises { margin: 1.2em 0; padding: 0.7em 0.9em; font-size: 0.95em; }
+.drill p, .problem p, .kata p, .street p, .fault p, .keypoints p, .exercises p { text-indent: 0; margin-bottom: 0.45em; }
+.drill { border: 1px solid #000; border-left: 5px solid #000; }
+.problem { border-top: 3px solid #000; border-bottom: 3px solid #000; }
+.kata { background: #eee; border-left: 3px solid #000; }
+.street { border: 1px dashed #000; }
+.fault { border: 1px solid #000; border-top: 5px solid #000; }
+.keypoints { border: 2px solid #000; }
+.exercises { border-top: 2px solid #000; }
+table { border-collapse: collapse; width: 100%; font-family: "Source Sans 3", sans-serif; font-size: 0.8em; margin: 1em 0; }
+th { border-top: 2px solid #000; border-bottom: 1px solid #000; text-align: left; padding: 0.3em; }
+td { border-bottom: 1px solid #999; padding: 0.3em; vertical-align: top; }
+dt { font-family: "Source Sans 3", sans-serif; font-weight: bold; margin-top: 0.6em; }
+dd { margin-left: 0; }
+.copyright p { font-size: 0.8em; text-indent: 0; margin-bottom: 0.6em; text-align: left; }
+.dedication p { text-align: center; font-style: italic; margin-top: 30%; }
