@@ -569,3 +569,25 @@ def move_arrow(ax, f, j, dx=0, dy=0, dz=0, rad=0.0, lw=1.0, ms=6):
 def step_arrow(ax, f, start, end, rad=0.3):
     a = f.P(v(*start)); b = f.P(v(*end))
     arrow(ax, a[0], a[1], b[0], b[1], rad=rad, lw=1.0, ms=6, z=30, ls=(0, (3, 1.5)))
+
+
+# ------------------------------------------------------------------ 2D exercise icons
+def icon(ax, P, ox=0, oy=0, sc=1.0, z=3, prop=None):
+    """Simple side-view exercise figure from 2D points (units ~ body height 100).
+    Keys: head, neck, sh, el, hd, hip, kn, ft (near side); el2, hd2, kn2, ft2 (far side, optional)."""
+    T = lambda k: np.array([ox + P[k][0] * sc, oy + P[k][1] * sc])
+    def seg(a, b, w1, w2, zz, fc=WH):
+        ax.add_patch(Polygon(taper(T(a), T(b), w1 * sc, w2 * sc), closed=True, fc=fc, ec=K, lw=0.8, zorder=zz))
+    # far limbs
+    if "kn2" in P:
+        seg("hip", "kn2", 7, 6, z, G1); seg("kn2", "ft2", 6, 4.5, z, G1)
+    if "el2" in P:
+        seg("sh", "el2", 5.4, 4.6, z, G1); seg("el2", "hd2", 4.6, 3.6, z, G1)
+    # torso
+    seg("hip", "sh", 15, 17, z + 0.1)
+    seg("neck", "sh", 5, 5, z + 0.05)
+    ax.add_patch(Circle(T("head"), 6.3 * sc, fc=WH, ec=K, lw=0.8, zorder=z + 0.2))
+    seg("hip", "kn", 7.4, 6.2, z + 0.3); seg("kn", "ft", 6.2, 4.6, z + 0.3)
+    seg("sh", "el", 5.6, 4.8, z + 0.4); seg("el", "hd", 4.8, 3.8, z + 0.4)
+    if prop:
+        prop(ax, T)
